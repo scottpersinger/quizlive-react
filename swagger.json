@@ -1,0 +1,282 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "QuizLive API",
+    "description": "Collaborative real-time Quiz Game",
+    "version": "1.0.0"
+  },
+  "produces": ["application/json"],
+  "host": "localhost:8080",
+  "basePath": "/v1",
+  "paths": {
+  
+  "/users": {
+    
+    "get": {
+      "summary": "",
+      "description":"Returns all users",
+      "x-swagger-router-controller": "Default",
+      "tags": ["Default"],
+      "operationId": "usersGet",
+      "responses": {
+        "200": {
+  "description" : "Returns all users",
+  "schema" : {
+    "type" : "array",
+    "items" : {
+      "$ref" : "#/definitions/User"
+    }
+  }
+}
+        
+        
+      }
+    } ,
+    
+    "post": {
+      "summary": "",
+      "description":"Register a new user in the game",
+      "x-swagger-router-controller": "Default",
+      "tags": ["Default"],
+      "operationId": "usersPost",
+      "parameters": [
+        {
+  "in" : "body",
+  "name" : "body",
+  "required" : false,
+  "schema" : {
+    "$ref" : "#/definitions/User"
+  }
+}
+        
+      ],
+      "responses": {
+        "200": {
+  "description" : "The create User",
+  "schema" : {
+    "$ref" : "#/definitions/User"
+  }
+}
+        ,
+        "403": {
+  "description" : "A user with that name already exists"
+}
+        
+        
+      }
+    } 
+    
+  } ,
+  
+  "/game": {
+    
+    "get": {
+      "summary": "Returns the current game if one is active",
+      "description":"",
+      "x-swagger-router-controller": "Default",
+      "tags": ["Default"],
+      "operationId": "gameGet",
+      "responses": {
+        "200": {
+  "description" : "Active game",
+  "schema" : {
+    "$ref" : "#/definitions/Game"
+  }
+}
+        ,
+        "404": {
+  "description" : "No game is active"
+}
+        
+        
+      }
+    } 
+    
+  } ,
+  
+  "/guess": {
+    
+    "post": {
+      "summary": "Submits a question guess from a user",
+      "description":"",
+      "x-swagger-router-controller": "Default",
+      "tags": ["Default"],
+      "operationId": "guessPost",
+      "parameters": [
+        {
+  "in" : "body",
+  "name" : "body",
+  "required" : false,
+  "schema" : {
+    "$ref" : "#/definitions/Guess"
+  }
+}
+        
+      ],
+      "responses": {
+        "200": {
+  "description" : "The guess was submitted",
+  "schema" : {
+    "$ref" : "#/definitions/inline_response_200"
+  }
+}
+        ,
+        "403": {
+  "description" : "That user has submitted a guess for this question already"
+}
+        
+        
+      }
+    } 
+    
+  } ,
+  
+  "/questions": {
+    
+    "get": {
+      "summary": "List of game questions",
+      "description":"The questions of the game, in order.",
+      "x-swagger-router-controller": "Default",
+      "tags": ["Default"],
+      "operationId": "questionsGet",
+      "responses": {
+        "200": {
+  "description" : "An array of question items",
+  "schema" : {
+    "type" : "array",
+    "items" : {
+      "$ref" : "#/definitions/Question"
+    }
+  }
+}
+        
+        
+      }
+    } ,
+    
+    "post": {
+      "summary": "Create a new question",
+      "description":"",
+      "x-swagger-router-controller": "Default",
+      "tags": ["Default"],
+      "operationId": "questionsPost",
+      "parameters": [
+        {
+  "in" : "body",
+  "name" : "body",
+  "required" : false,
+  "schema" : {
+    "$ref" : "#/definitions/Question"
+  }
+}
+        
+      ],
+      "responses": {
+        "200": {
+  "description" : "Returns the newly created question",
+  "schema" : {
+    "$ref" : "#/definitions/Question"
+  }
+}
+        
+        
+      }
+    } 
+    
+  } 
+  
+  }, "definitions": {
+  "Question": {
+  "type" : "object",
+  "required" : [ "answers", "id", "query" ],
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "description" : "Unique identifier for this question"
+    },
+    "query" : {
+      "type" : "string",
+      "description" : "The question text."
+    },
+    "answers" : {
+      "type" : "array",
+      "description" : "Array of possible answer strings, in order.",
+      "items" : {
+        "type" : "string"
+      }
+    },
+    "correct_answer" : {
+      "type" : "string",
+      "description" : "Text the correct answer"
+    }
+  }
+},"Game": {
+  "type" : "object",
+  "properties" : {
+    "current_question_index" : {
+      "type" : "integer",
+      "description" : "The current question index"
+    },
+    "total_questions" : {
+      "type" : "integer",
+      "description" : "Total count of questions"
+    },
+    "current_question" : {
+      "$ref" : "#/definitions/Question"
+    },
+    "question_eta" : {
+      "type" : "integer",
+      "description" : "Seconds until next question"
+    }
+  }
+},"User": {
+  "type" : "object",
+  "required" : [ "name" ],
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "description" : "unique id"
+    },
+    "name" : {
+      "type" : "string",
+      "description" : "user name"
+    },
+    "avator" : {
+      "type" : "string",
+      "description" : "User image"
+    },
+    "points" : {
+      "type" : "integer",
+      "description" : "Total points in the current game"
+    },
+    "rank" : {
+      "type" : "integer",
+      "description" : "Current ranking in the game"
+    }
+  }
+},"Guess": {
+  "type" : "object",
+  "properties" : {
+    "user_id" : {
+      "type" : "string",
+      "description" : "User making the guess"
+    },
+    "question_index" : {
+      "type" : "integer",
+      "description" : "Index of the question being guessed"
+    },
+    "answer" : {
+      "type" : "string",
+      "description" : "Gussed answer"
+    }
+  }
+},"inline_response_200": {
+  "properties" : {
+    "correct" : {
+      "type" : "boolean",
+      "description" : "Was the guess correct"
+    }
+  }
+}
+  }
+}
