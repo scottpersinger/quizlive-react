@@ -15,23 +15,14 @@ const GameTabs = React.createClass({
 
 
   render() {
-  	  let title = "QuizLive (" + this.props.user + ")"; 
 	  return (
 	    <div>
-	      <AppBar
-	        title={title}
-	        iconClassNameRight="muidocs-icon-navigation-expand-more" />
-	    
 	      <Tabs>
-	        <Tab label="Item One" >
+	        <Tab label="Game" >
 	        </Tab>
-	        <Tab label="Item Two" >
+	        <Tab label="Leaderboard" >
 	          (Tab content...)
 	        </Tab>
-	        <Tab
-	          label="Item Three"
-	          route="home"
-	          onActive={this._handleTabActive} />
 	      </Tabs>
 
 	    </div>

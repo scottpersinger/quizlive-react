@@ -4,6 +4,11 @@
   let injectTapEventPlugin = require('react-tap-event-plugin');
   let Main = require('./components/main.jsx'); // Our custom react component
 
+  let Provider = require('react-redux').Provider;
+
+  const configureStore = require('./store/configureStore');
+  const store = configureStore();
+
   //Needed for React Developer Tools
   window.React = React;
 
@@ -15,6 +20,6 @@
 
   // Render the main app react component into the app div.
   // For more details see: https://facebook.github.io/react/docs/top-level-api.html#react.render
-  ReactDOM.render(<Main />, document.getElementById('app'));
+  ReactDOM.render(<Provider store={store}><Main /></Provider>, document.getElementById('app'));
 
 })();

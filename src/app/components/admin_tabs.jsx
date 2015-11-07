@@ -13,7 +13,7 @@ const AdminTabs = React.createClass({
 
   getInitialState () {
     return {
-    	questions: [{index: 1, id: "1", question:'What is your name?'}, 
+    	questions: [{index: 1, id: "1", question:'What is your name?'},
     	{index: 2, id: "2", question:'What is your favorite color?'}],
     	current_question:'',
     	current_index: null,
@@ -54,7 +54,6 @@ const AdminTabs = React.createClass({
 
   render() {
   	  let questionLink = this.linkState('current_question');
-  	  let title = "Quiz Admin (" + this.props.user + ")"; 
   	  let dialogActions = [
   		{ text: 'Cancel' },
   		{ text: 'Submit', onTouchTap: this.onDialogSubmit, ref: 'submit' },
@@ -66,10 +65,6 @@ const AdminTabs = React.createClass({
 
 	  return (
 	    <div>
-	      <AppBar
-	        title={title}
-	        iconClassNameRight="muidocs-icon-navigation-expand-more" />
-	    
 	      <Tabs>
 	        <Tab label="Game" >
 	        </Tab>

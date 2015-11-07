@@ -22,17 +22,12 @@ const Register = React.createClass({
 
 	  return (
 	    <div>
-          <AppBar
-            title="Quiz Live"
-            iconClassNameRight="muidocs-icon-navigation-expand-more" />
+        <h1>New User</h1>
+        <div>
+          <TextField hintText="Name" onChange={this._nameChange}/>
+        </div>
 
-            <h1>New User</h1>
-            <div>
-              <TextField hintText="Name" onChange={this._nameChange}/>
-            </div>
-
-            <RaisedButton label="Register" primary={true} onTouchTap={this._handleTouchTap} />
-
+        <RaisedButton label="Register" primary={true} onTouchTap={this._handleTouchTap} />
 	    </div>
 	  );
   },
