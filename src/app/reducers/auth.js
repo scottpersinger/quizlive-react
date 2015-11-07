@@ -1,6 +1,6 @@
 import { AUTH_LOGIN, AUTH_LOGOUT } from '../constants/actions'
 
-export default function users(state = null, action) {
+export default function users(state = localStorage.getItem('token') || null, action) {
   switch (action.type) {
     case AUTH_LOGIN:
       return action.payload.username

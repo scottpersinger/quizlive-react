@@ -15,23 +15,17 @@ const Register = require('./register.jsx');
 import { connect } from 'react-redux';
 import { login, logout } from '../actions/auth';
 
+// LeftNav menu items
 const menuItems = [
   { route: 'logout', text: 'Logout' },
 ];
 
-// Which part of the Redux global state does our component want to receive as props?
+// The part of the Redux global state will inject into the Component as props
 function mapStateToProps(state) {
   return {
     username: state.auth,
+    questions: state.questions,
   };
-}
-
-// Which action creators does it want to receive by props?
-function mapDispatchToProps(dispatch) {
-  return {
-    login: (username) => dispatch(login(username)),
-    logout: () => dispatch(logout()),
-  }
 }
 
 const Main = React.createClass({
@@ -59,7 +53,7 @@ const Main = React.createClass({
   },
 
   onRegister(name) {
-    this.props.login(name);
+    this.props.dispatch(login(name));
   },
 
   render() {
@@ -76,7 +70,7 @@ const Main = React.createClass({
     let mainPage = null;
     let title = null;
     if (this.props.username === 'admin') {
-      mainPage = <AdminTabs user={this.props.username}/>;
+      mainPage = <AdminTabs user={this.props.username} questions={this.props.questions} dispatch={this.props.dispatch}/>;
       title = "Quiz Admin (" + this.props.username + ")";
     } else if (this.props.username) {
       mainPage = <GameTabs user={this.props.username}/>;
@@ -104,12 +98,11 @@ const Main = React.createClass({
   },
 
   _handleLeftNavTouchTap(e) {
-    this.props.logout();
+    this.props.dispatch(logout());
   },
 
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(Main)

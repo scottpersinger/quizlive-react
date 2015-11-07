@@ -20,8 +20,8 @@ const QuestionList = React.createClass({
   	  let that = this;
 	  return (
 	      <List>
-	        {this.props.questions.map(function(q) {
-  	          return <ListItem id={q.id} key={q.id} primaryText={q.index + ': ' + q.question} 
+	        {this.props.questions.map(function(q, idx) {
+  	          return <ListItem id={q.id} key={q.id} primaryText={(idx+1) + ': ' + q.question} 
   	          			onTouchTap={that.selectItem} />;
 	    	})}
 	      </List>

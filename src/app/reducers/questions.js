@@ -10,10 +10,10 @@ export default function users(state = initialState, action) {
 
   switch (action.type) {
     case QUESTION_LIST:
-      return action.payload.questions;
+      return action.payload;
 
     case QUESTION_CREATE:
-      return [...state, action.payload.question];
+      return [...state, action.payload];
 
     case QUESTION_UPDATE:
       return state; // TODO

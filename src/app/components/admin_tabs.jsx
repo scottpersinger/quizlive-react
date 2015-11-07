@@ -8,6 +8,8 @@ const Dialog = require('material-ui/lib/dialog');
 const TextField = require('material-ui/lib/text-field');
 const LinkedStateMixin = require('react-addons-linked-state-mixin');
 
+import { create, remove } from '../actions/questions';
+
 const AdminTabs = React.createClass({
   mixins: [LinkedStateMixin],
 
@@ -30,9 +32,9 @@ const AdminTabs = React.createClass({
   },
 
   selectItem(questionId) {
-  	let q = this.state.questions.find(q => q.id === questionId);
+  	let q = this.props.questions.find(q => q.id === questionId);
   	if (q) {
-  		this.setState({current_question:q.question, current_index: this.state.questions.indexOf(q)});
+  		this.setState({current_question: q.question, current_index: this.props.questions.indexOf(q)});
 	  	this.refs.formDialog.show();
   	}
   },
@@ -40,15 +42,14 @@ const AdminTabs = React.createClass({
   onDialogSubmit() {
   	console.log(this.state);
   	this.refs.formDialog.dismiss();
-  	let index = this.state.questions.reduce(function(prev, cur) {return cur.index > prev.index ? cur : prev}).index+1;
-  	this.state.questions.push({id:Math.random()+'', question: this.state.current_question,
-  								index: index});
-  	this.setState({question: this.state.questions});
+  	let index = this.props.questions.reduce(function(prev, cur) {return cur.index > prev.index ? cur : prev}).index+1;
+    this.props.dispatch(create(Math.random().toString(), this.state.current_question));
   },
 
   onDialogDelete() {
-  	console.log("Deleting ", this.state.questions[this.state.current_index]);
-  	this.setState({questions: this.state.questions.splice(this.state.current_index, 1)});
+    let selectedQuestion = this.props.questions[this.state.current_index];
+  	console.log("Deleting ", selectedQuestion);
+    this.props.dispatch(remove(selectedQuestion.id));
   	this.refs.formDialog.dismiss();
   },
 
@@ -73,7 +74,7 @@ const AdminTabs = React.createClass({
 	            <RaisedButton label="Add Question" secondary={true} onTouchTap={this.openForm} />
 	          </div>
 	          <h1>Questions</h1>
-	          <QuestionList questions={this.state.questions} selectItem={this.selectItem}/>
+	          <QuestionList questions={this.props.questions} selectItem={this.selectItem}/>
 	        </Tab>
 	      </Tabs>
 
