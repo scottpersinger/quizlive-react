@@ -17,7 +17,10 @@ app.use(bodyParser.json());
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://localhost');
 
-var Question     = require('./models/question');
+var Question     = require('./models/question'),
+    User         = require('./models/user'),
+    Game         = require('./models/game'),
+    Guess        = require('./models/guess');
 
 // Setup the router and our routes
 
@@ -53,6 +56,49 @@ router.route('/questions')
     });
   });
 
+router.route('/users')
+	.get(function(req, res) {
+		User.find(function(err, users) {
+			if (err) {
+				res.send(err);
+			} else {
+				res.json(users.map(function(q) {return q.toObject()}));
+			}
+		})
+	})
+
+	.post(function(req, res) {
+	  	var user = new User(req.body);
+	  	user.save(function(err) {
+	    	if (err)
+	        	res.send(err);
+
+	        res.json(user.toObject());
+	    });
+	  });
+
+router.route('/game')
+	.get(function(req, res) {
+		Game.findOne(function(err, game) {
+			if (err) {
+				res.send(err);
+			} else {
+				res.json(game.toObject()}));
+			}
+		})
+	})
+
+router.route('/guess')
+	.post(function(req, res) {
+	  	var guess = new Guess(req.body);
+	  	guess.save(function(err) {
+	    	if (err)
+	        	res.send(err);
+
+	        res.json({correct:true});
+	    });
+	})
+	
 /********************* SERVER START *****************************/
 
 app.use('/api', router);
