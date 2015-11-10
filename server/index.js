@@ -18,10 +18,12 @@ app.use(bodyParser.json());
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://localhost');
 
-var Question     = require('./models/question'),
-    User         = require('./models/user'),
-    Game         = require('./models/game'),
-    Guess        = require('./models/guess');
+var models = require('./models');
+
+var Question     = models.Question,
+    User         = models.User,
+    Game         = models.Game,
+    Guess        = models.Guess;
 
 // Setup the router and our routes
 
@@ -233,8 +235,17 @@ server.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+var _subscriptions = {};
+
+function model_signals(action, modelName, doc) {
+  console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
+  // Dispatch event to _subscriptions
+}
+require('./models/signals')(models, model_signals);
+
+
 io.on('connection', function(socket) {
-  console.log('a user connected');
+  console.log('socket connection established');
 });
 
 module.exports = {app: app, mongoose: mongoose};
