@@ -127,12 +127,26 @@ router.route('/game')
 
 router.route('/guess')
 	.post(function(req, res) {
+      Guess.find({user_id:req.body.user_id, question_index:req.body.question_index}, function(err, rows) {
+        if (rows.length > 0) {
+          res.status(403).json({error: "Already answered"});
+        } else {
+          // !! Still need to finish this stuff
+          Guess.create(req.body, function(err, guess) {
+            // Now check for the correct answer
+            Question.findOne({_id: guess.question_id}, function(err, record) {
+
+            })
+          })          
+        }
+      })
 	  	var guess = new Guess(req.body);
 	  	guess.save(function(err) {
-	    	if (err)
-	        	res.send(err);
-
-	        res.json({correct:true});
+	    	if (err) {
+	        res.status(403).send(err);
+        } else {
+	         res.json({correct:true});
+        }
 	    });
 	})
 

@@ -52,7 +52,11 @@ describe("Game CRUD works", function() {
 				  .post('/api/guess')
 				  .set('Authorization', 'scott')
 				  .send({user_id:'scott', question_index:0, answer:"red"})
-				  .expect(403, cb);
+				  .end(function(err, res) {
+				  	res.statusCode.should.be.equal(403);
+				  	console.log(res);
+				  	cb();
+				  });
 			}
 		], done);
 	});

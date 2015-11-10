@@ -6,10 +6,10 @@ var utils        = require('./model_common');
 
 var GuessSchema   = new Schema({
     user_id: String,
-    question_index: Number,
+    question_id: String,
     answer: String
 });
-GuessSchema.index({user_id: 1, question_index: 1}, {unique: true});
+GuessSchema.index({user_id: 1, question_id: 1}, {unique: true});
 
 utils.setup_schema(GuessSchema);
 
