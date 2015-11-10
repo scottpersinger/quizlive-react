@@ -96,12 +96,21 @@ router.route('/users')
 	  	var user = new User(req.body);
 	  	user.save(function(err) {
 	    	if (err) {
-	        	res.status(403).send(err);
+	        res.status(403).send(err);
         } else {
-	        res.json(user.toObject({virtuals:true}));
+	        res.status(201).json(user.toObject({virtuals:true}));
         }
 	    });
 	  });
+
+    router.route('/users/:name')
+      .delete(function(req, res, next) {
+        console.log('deleting user: ' + req.params.name);
+        User.findOneAndRemove({name: req.params.name}, function(err) {
+          if (err) return next(err);
+          res.status(204).send();
+        })
+      });
 
 router.route('/game')
 	.get(function(req, res) {
@@ -115,7 +124,7 @@ router.route('/game')
 	})
 
   .post(function(req, res) {
-    if (req.headers['authorization'] == User.schema._admin_secret) {
+    if (req.headers['authorization'] === User.schema._admin_secret) {
       Game.remove({}, function() {
         Question.count({}, function(err, c) {
           Game.create({total_questions:c, current_question_index:0}, function(err, game) {

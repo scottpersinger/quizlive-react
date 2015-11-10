@@ -6,6 +6,8 @@
 
   let Provider = require('react-redux').Provider;
 
+  require('whatwg-fetch');
+
   const configureStore = require('./store/configureStore');
   const store = configureStore();
 

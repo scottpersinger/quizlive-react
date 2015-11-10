@@ -22,6 +22,7 @@ export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 
 export const USERS_LIST = 'USERS_LIST';
 export const USERS_CREATE = 'USERS_CREATE';
+export const USERS_DELETE = 'USERS_DELETE';
 
 export const QUESTION_LIST = 'QUESTION_LIST';
 export const QUESTION_CREATE = 'QUESTION_CREATE';
