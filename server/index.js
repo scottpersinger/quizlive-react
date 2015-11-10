@@ -5,6 +5,7 @@ var express      = require('express'),
     cors         = require('cors'),
     http         = require('http');
 
+var async = require('async');
 var app = express();
 var server = http.createServer(app);
 var io = require('socket.io')(server);
@@ -127,28 +128,100 @@ router.route('/game')
 
 router.route('/guess')
 	.post(function(req, res) {
-      Guess.find({user_id:req.body.user_id, question_index:req.body.question_index}, function(err, rows) {
-        if (rows.length > 0) {
-          res.status(403).json({error: "Already answered"});
-        } else {
-          // !! Still need to finish this stuff
+      async.waterfall([
+        // make sure user hasn't already answered ...
+        function(cb) {
+          Guess.find({user_id:req.body.user_id, question_index:req.body.question_index}, function(err, rows){
+            if (err) {
+              cb(err);
+              return;
+            }
+            if (rows.length > 0) {
+              cb({
+                status: 403,
+                data: {
+                  error: 'Already answered'
+                }
+              });
+              return;
+            }
+            cb(null);
+          })
+        },
+        // create guess for user ...
+        function(cb) {
           Guess.create(req.body, function(err, guess) {
-            // Now check for the correct answer
-            Question.findOne({_id: guess.question_id}, function(err, record) {
-
-            })
-          })          
+            if (err) {
+              cb(err);
+              return;
+            }
+            cb(null, guess);
+          });
+        },
+        // lookup correct answer
+        function(guess, cb) {
+          Question.findOne({_id: guess.question_id}, function(err, question) {
+            if (err) {
+              cb(err);
+              return;
+            }
+            cb(null, guess, question);
+          });
+        },
+        // check if answer is correct ...
+        function(guess, question, cb) {
+          // they answered wrong, we can bail now ...
+          if (guess.answer !== question.correct_answer) {
+            cb(null, false);
+            return;
+          }
+          // increment points ...
+          async.waterfall([
+            // see if someone else answered correct already ...
+            function(cb){
+              Guess.find({question_id: guess.question_id, answer: question.correct_answer}, function(err, rightGuesses) {
+                if (err) {
+                  cb(err);
+                  return;
+                }
+                cb(null, rightGuesses.length === 1);
+              });
+            },
+            // increment user's points ...
+            function(firstToAnswer, cb){
+              User.findByIdAndUpdate(
+                req.body.user_id,
+                {
+                  $inc: {
+                    points: firstToAnswer ? 5 : 1
+                  }
+                },
+                function (err, user) {
+                  cb(err);
+                }
+              );
+            }
+          ], function(err){
+            cb(err, true);
+          });
         }
-      })
-	  	var guess = new Guess(req.body);
-	  	guess.save(function(err) {
-	    	if (err) {
-	        res.status(403).send(err);
-        } else {
-	         res.json({correct:true});
+      ], function(err, correct) {
+        // handle errors
+        if (err) {
+          if (err.status) {
+            res.status(err.status).json(err.data);
+          }
+          else {
+            console.log(err);
+            res.sendStatus(500);
+          }
+          return;
         }
-	    });
-	})
+        res.status(201).json({
+          correct: correct
+        });
+      });
+	});
 
 /********************* SERVER START *****************************/
 
