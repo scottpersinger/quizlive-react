@@ -13,20 +13,19 @@ const AdminTabs = require('./admin_tabs.jsx'); // Our custom react component
 const Register = require('./register.jsx');
 
 import { connect } from 'react-redux';
-import { login, logout } from '../actions/auth';
+import { logout } from '../actions/auth';
+
+// Select the part of the Redux's global state to inject into the Component as props
+function mapStateToProps(state) {
+  return {
+    username: state.auth,
+  };
+}
 
 // LeftNav menu items
 const menuItems = [
   { route: 'logout', text: 'Logout' },
 ];
-
-// The part of the Redux global state will inject into the Component as props
-function mapStateToProps(state) {
-  return {
-    username: state.auth,
-    questions: state.questions,
-  };
-}
 
 const Main = React.createClass({
 
@@ -53,7 +52,7 @@ const Main = React.createClass({
   },
 
   onRegister(name) {
-    this.props.dispatch(login(name));
+
   },
 
   render() {
@@ -70,13 +69,13 @@ const Main = React.createClass({
     let mainPage = null;
     let title = null;
     if (this.props.username === 'admin') {
-      mainPage = <AdminTabs user={this.props.username} questions={this.props.questions} dispatch={this.props.dispatch}/>;
+      mainPage = <AdminTabs />;
       title = "Quiz Admin (" + this.props.username + ")";
     } else if (this.props.username) {
-      mainPage = <GameTabs user={this.props.username}/>;
+      mainPage = <GameTabs />;
       title = "QuizLive (" + this.props.username + ")";
     } else {
-      mainPage = <Register onSave={this.onRegister}/>
+      mainPage = <Register />
       title = "Quiz Live";
     }
 
@@ -103,6 +102,4 @@ const Main = React.createClass({
 
 });
 
-export default connect(
-  mapStateToProps
-)(Main)
+export default connect(mapStateToProps)(Main)

@@ -3,6 +3,15 @@ const Tabs = require('material-ui/lib/tabs/tabs');
 const Tab = require('material-ui/lib/tabs/tab');
 const AppBar = require('material-ui/lib/app-bar');
 
+import { connect } from 'react-redux';
+
+// Select the part of the Redux's global state to inject into the Component as props
+function mapStateToProps(state) {
+  return {
+    username: state.auth,
+  };
+}
+
 const GameTabs = React.createClass({
 
   getInitialState () {
@@ -31,4 +40,6 @@ const GameTabs = React.createClass({
 
 });
 
-module.exports = GameTabs;
+export default connect(
+  mapStateToProps
+)(GameTabs);

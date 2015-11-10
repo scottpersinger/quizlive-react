@@ -24,7 +24,7 @@ var Question     = require('./models/question'),
 
 // Setup the router and our routes
 
-var router = express.Router();  
+var router = express.Router();
 
 router.use(function(req, res, next) {
     // do logging
@@ -33,28 +33,50 @@ router.use(function(req, res, next) {
 });
 
 router.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });   
+    res.json({ message: 'hooray! welcome to our api!' });
 });
 
 router.route('/questions')
   .get(function(req, res) {
  	Question.find(function(err, questions) {
-    	if (err)
-        	res.send(err);
-
-    	res.json(questions.map(function(q) {return q.toObject()}));
+  	if (err) res.send(err);
+  	res.json(questions.map(function(q) {return q.toObject()}));
 	});
   })
 
   .post(function(req, res) {
   	var question = new Question(req.body);
   	question.save(function(err) {
-    	if (err)
-        	res.send(err);
-
-        res.json(question.toObject());
+    	if (err) res.send(err);
+      res.json(question.toObject());
     });
+  })
+
+router.route('/questions/:id')
+  .put(function(req, res, next) {
+    console.log('updating question: ' + req.params.id);
+    Question.findByIdAndUpdate(
+      req.params.id,
+      { query: req.body.query,
+        answers: req.body.answers,
+        correct_answer: req.body.correct_answer,
+      },
+      { new: true },
+      function (err, doc) {
+        if (err) return next(err);
+        res.send(doc.toObject());
+      }
+    );
+  })
+
+  .delete(function(req, res, next) {
+    console.log('deleting question: ' + req.params.id);
+    Question.findByIdAndRemove(req.params.id, function(err) {
+      if (err) return next(err);
+      res.status(204).send();
+    })
   });
+
 
 router.route('/users')
 	.get(function(req, res) {
@@ -83,7 +105,7 @@ router.route('/game')
 			if (err) {
 				res.send(err);
 			} else {
-				res.json(game.toObject()}));
+				res.json(game.toObject());
 			}
 		})
 	})
@@ -98,7 +120,7 @@ router.route('/guess')
 	        res.json({correct:true});
 	    });
 	})
-	
+
 /********************* SERVER START *****************************/
 
 app.use('/api', router);
@@ -112,4 +134,3 @@ server.listen(app.get('port'), function() {
 io.on('connection', function(socket) {
   console.log('a user connected');
 });
-
