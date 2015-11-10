@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../config';
 
 import { QUESTION_LIST, QUESTION_CREATE, QUESTION_UPDATE, QUESTION_DELETE } from '../constants/actions';
 
-export function list (username) {
+export function list () {
   return dispatch => {
     fetch(API_BASE_URL + 'api/questions')
     .then(response => response.json())
