@@ -4,15 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^1.5.0",
     "body-parser": "^1.14.1",
     "cors": "^2.7.1",
     "express": "^4.13.3",
+    "lodash": "^3.10.1",
+    "mocha": "^2.3.3",
     "mongoose": "^4.2.4",
-    "socket.io": "^1.3.7"
+    "mongoose-unique-validator": "^0.6.0",
+    "should": "^7.1.1",
+    "socket.io": "^1.3.7",
+    "supertest": "^1.1.0"
   }
 }

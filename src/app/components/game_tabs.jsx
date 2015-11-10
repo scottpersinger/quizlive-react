@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 // Select the part of the Redux's global state to inject into the Component as props
 function mapStateToProps(state) {
   return {
-    username: state.auth,
   };
 }
 

@@ -9,6 +9,7 @@ var GuessSchema   = new Schema({
     question_index: Number,
     answer: String
 });
+GuessSchema.index({user_id: 1, question_index: 1}, {unique: true});
 
 utils.setup_schema(GuessSchema);
 

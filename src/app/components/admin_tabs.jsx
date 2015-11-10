@@ -15,7 +15,6 @@ import { list, create, update, remove } from '../actions/questions';
 // Select the part of the Redux's global state to inject into the Component as props
 function mapStateToProps(state) {
   return {
-    username: state.auth,
     questions: state.questions,
   };
 }

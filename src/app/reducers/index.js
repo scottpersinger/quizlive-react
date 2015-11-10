@@ -7,9 +7,9 @@ import game from './game';
 import guess from './guess';
 
 const rootReducer = combineReducers({
-  auth,
-  game,
-  guess,
+  auth:auth,
+  game:game,
+  guess,         // ES6 syntax!
   questions,
   users,
 })

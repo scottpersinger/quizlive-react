@@ -28,7 +28,7 @@ var router = express.Router();
 
 router.use(function(req, res, next) {
     // do logging
-    console.log('Something is happening. ', req.body);
+    //console.log('Something is happening. ', req.body);
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -92,10 +92,11 @@ router.route('/users')
 	.post(function(req, res) {
 	  	var user = new User(req.body);
 	  	user.save(function(err) {
-	    	if (err)
-	        	res.send(err);
-
-	        res.json(user.toObject());
+	    	if (err) {
+	        	res.status(403).send(err);
+        } else {
+	        res.json(user.toObject({virtuals:true}));
+        }
 	    });
 	  });
 
@@ -109,6 +110,20 @@ router.route('/game')
 			}
 		})
 	})
+
+  .post(function(req, res) {
+    if (req.headers['authorization'] == User.schema._admin_secret) {
+      Game.remove({}, function() {
+        Question.count({}, function(err, c) {
+          Game.create({total_questions:c, current_question_index:0}, function(err, game) {
+            res.send(game.toObject());
+          });
+        });
+      });
+    } else {
+      res.status(403).send("Not authorized");
+    }
+  });
 
 router.route('/guess')
 	.post(function(req, res) {
@@ -134,3 +149,5 @@ server.listen(app.get('port'), function() {
 io.on('connection', function(socket) {
   console.log('a user connected');
 });
+
+module.exports = {app: app, mongoose: mongoose};
