@@ -1,8 +1,17 @@
 import { API_BASE_URL } from '../config';
 
-import { USERS_LIST } from '../constants/actions';
+import { USERS_LIST, USERS_CREATE, USERS_DELETE } from '../constants/actions';
 
-export function list () {
+export function handleAPIEvent(event) {
+  switch(event.action) {
+    case 'create':
+      return {type: USERS_CREATE, payload: event.data};
+    case 'remove':
+      return {type: USERS_DELETE, payload: event.data};
+  }
+}
+
+export function list() {
   return dispatch => {
     fetch(API_BASE_URL + 'api/users')
     .then(response => response.json())

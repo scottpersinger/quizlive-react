@@ -3,7 +3,7 @@
 module.exports = function(models, dispatcher) {
 	for (var m in models) {
 		var schema = models[m].schema;
-		
+
 		schema.pre('save', function (next) {
 		  this.wasNew = this.isNew;
 		  next();

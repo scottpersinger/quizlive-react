@@ -2,9 +2,9 @@ import { EventEmitter } from 'events';
 
 import io from 'socket.io-client';
 
-import { API_BASE_URL } from './config.js';
+import { API_BASE_URL } from '../config.js';
 
-class APIListener extends EventEmitter {
+class APIEventListener extends EventEmitter {
   constructor() {
     super();
 
@@ -68,5 +68,5 @@ class APIListener extends EventEmitter {
 }
 
 export default function () {
-  return new APIListener();
+  return new APIEventListener();
 }
