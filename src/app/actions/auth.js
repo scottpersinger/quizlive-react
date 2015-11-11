@@ -29,10 +29,16 @@ export function login (username) {
     })
     .then(json => {
       localStorage.setItem('username', username);
+      if (json.token) {
+        localStorage.setItem('token',json.token);
+      } else {
+        localStorage.removeItem('token');
+      }
       dispatch({
         type: AUTH_LOGIN,
         payload: {
           username: username,
+          token: json.token,
         },
       });
       dispatch({

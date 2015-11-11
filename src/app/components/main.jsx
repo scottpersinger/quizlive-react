@@ -18,7 +18,7 @@ import { logout } from '../actions/auth';
 // Select the part of the Redux's global state to inject into the Component as props
 function mapStateToProps(state) {
   return {
-    username: state.auth,
+    user: state.auth,
   };
 }
 
@@ -68,15 +68,17 @@ const Main = React.createClass({
 
     let mainPage = null;
     let title = null;
-    if (this.props.username === 'admin') {
-      mainPage = <AdminTabs />;
-      title = "Quiz Admin (" + this.props.username + ")";
-    } else if (this.props.username) {
-      mainPage = <GameTabs />;
-      title = "QuizLive (" + this.props.username + ")";
-    } else {
+    if (!this.props.user || !this.props.user.username) {
       mainPage = <Register />
       title = "Quiz Live";
+    } else {
+      if (this.props.user.username === 'admin') {
+        mainPage = <AdminTabs token={this.props.user.token} />;
+        title = "Quiz Admin (" + this.props.user.username + ")";
+      } else {
+        mainPage = <GameTabs username={this.props.user.username} game={this.props.game} />;
+        title = "QuizLive (" + this.props.user.username + ")";
+      }
     }
 
     return (

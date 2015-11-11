@@ -2,7 +2,7 @@ import { API_BASE_URL } from '../config';
 
 import { USERS_LIST } from '../constants/actions';
 
-export function list () {
+export function list_users () {
   return dispatch => {
     fetch(API_BASE_URL + 'api/users')
     .then(response => response.json())

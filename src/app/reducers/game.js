@@ -1,9 +1,12 @@
-import { GAME_UPDATE } from '../constants/actions'
+import { GAME_UPDATE, GAME_LIST } from '../constants/actions'
 
 const initialState = {};
 
 export default function users(state = initialState, action) {
   switch (action.type) {
+  	case GAME_LIST:
+  		return action.payload;
+  		
     case GAME_UPDATE:
       return state;
 

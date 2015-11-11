@@ -31,7 +31,7 @@ var router = express.Router();
 
 router.use(function(req, res, next) {
     // do logging
-    //console.log('Something is happening. ', req.body);
+    console.log(req.path, " ", req.body);
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -127,10 +127,33 @@ router.route('/game')
     if (req.headers['authorization'] === User.schema._admin_secret) {
       Game.remove({}, function() {
         Question.count({}, function(err, c) {
-          Game.create({total_questions:c, current_question_index:0}, function(err, game) {
+          Game.create({total_questions:c, current_question_index:0, question:{}}, function(err, game) {
             res.send(game.toObject());
           });
         });
+      });
+    } else {
+      res.status(403).send("Not authorized");
+    }
+  })
+
+  .put(function(req, res) {
+    if (req.headers['authorization'] === User.schema._admin_secret) {
+      Game.findOne({_id:req.body.id}, function(err, doc) {
+        if (doc) {
+          doc.current_question_index = req.body.current_question_index;
+          Question.find({}, function(err, questions) {
+            if (doc.current_question_index >= 0 && doc.current_question_index < questions.length) {
+              doc.question = {query:questions[doc.current_question_index].query,
+                              answers:questions[doc.current_question_index].answers};
+            }
+          })
+          doc.save(function() {
+            res.send(doc.toObject());
+          });
+        } else {
+          res.status(404).send("Game id not found");
+        }
       });
     } else {
       res.status(403).send("Not authorized");
@@ -247,7 +270,7 @@ server.listen(app.get('port'), function() {
 var _subscriptions = {};
 
 function model_signals(action, modelName, doc) {
-  console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
+  //console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
   // Dispatch event to _subscriptions
 }
 require('./models/signals')(models, model_signals);
