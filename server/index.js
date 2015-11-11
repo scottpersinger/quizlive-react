@@ -272,6 +272,7 @@ var _subscriptions = {};
 function model_signals(action, modelName, doc) {
   //console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
   // Dispatch event to _subscriptions
+  io.emit('notify', {resource: modelName.toLowerCase(), action: action, data: doc.toObject()});
 }
 require('./models/signals')(models, model_signals);
 

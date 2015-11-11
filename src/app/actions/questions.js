@@ -3,6 +3,18 @@ import { API_BASE_URL } from '../config';
 
 import { QUESTION_LIST, QUESTION_CREATE, QUESTION_UPDATE, QUESTION_DELETE } from '../constants/actions';
 
+export function handleAPIEvent(event) {
+  switch(event.action) {
+    case 'create':
+      return {type: QUESTION_CREATE, payload: event.data};
+    case 'update':
+      return {type: QUESTION_UPDATE, payload: event.data};
+    case 'remove':
+      return {type: QUESTION_DELETE, payload: event.data};
+  }
+}
+
+
 export function list () {
   return dispatch => {
     fetch(API_BASE_URL + 'api/questions')
