@@ -15,23 +15,26 @@ import { connect } from 'react-redux';
 function mapStateToProps(state) {
   return {
     users: state.users,
-    game: state.game,
+    game: state.games,
   };
 }
 
 const GameTabs = React.createClass({
 
   componentWillMount() {
-    this.props.dispatch(list_users());
     this.props.dispatch(get_game());
+    this.props.dispatch(list_users());
   },
 
   render() {
+	  let user = _.find(this.props.users, u => u.name === this.props.username);
+	  console.log("GameTabs props ", this.props);
+	  console.log("User is ", user);
 	  return (
 	    <div>
 	      <Tabs>
 	        <Tab label="Game" >
-	          {this.props.game ? <GameScreen question={this.props.game.question} username={this.props.username} /> : ''}
+	          {<GameScreen question={this.props.game ? this.props.game.question : null} user={user ? user : {}} />}
 	        </Tab>
 	        <Tab label="Leaderboard" >
             {this.props.users.length > 0 ? <LeaderboardTable users={this.props.users} /> : ''}

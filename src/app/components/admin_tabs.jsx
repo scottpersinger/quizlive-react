@@ -19,7 +19,7 @@ import { list_users } from '../actions/users';
 function mapStateToProps(state) {
   return {
     questions: state.questions,
-    game: state.game,
+    game: state.games,
     users: state.users,
   };
 }
@@ -101,8 +101,8 @@ const AdminTabs = React.createClass({
 	  if (this.state.current_question) {
 	  	dialogActions.unshift({text:'Delete', onTouchTap: this.onDialogDelete});
 	  }
-    console.log(this.props.users);
-    
+    console.log(this.props);
+
     let game_question = '';
     let game_query = '';
     if (this.props.game.current_question_index != null && this.props.game.current_question_index >= 0) {

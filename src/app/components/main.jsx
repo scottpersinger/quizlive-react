@@ -76,7 +76,7 @@ const Main = React.createClass({
         mainPage = <AdminTabs token={this.props.user.token} />;
         title = "Quiz Admin (" + this.props.user.username + ")";
       } else {
-        mainPage = <GameTabs username={this.props.user.username} game={this.props.game} />;
+        mainPage = <GameTabs username={this.props.user.username} />;
         title = "QuizLive (" + this.props.user.username + ")";
       }
     }

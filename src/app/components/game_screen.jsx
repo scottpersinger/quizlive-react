@@ -18,7 +18,7 @@ export default React.createClass({
 	};
     return (
     	<div>
-    	  <h2><i>{this.props.username}</i>: {this.props.points} pts</h2>
+    	  <h2><i>{this.props.user.name}</i>: {this.props.points} pts</h2>
     	  <div style={divStyle}>
     	  	  {this.props.question ? this.props.question.query : 'Game will start soon...'}
     	  </div>
