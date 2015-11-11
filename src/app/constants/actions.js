@@ -31,6 +31,7 @@ export const QUESTION_UPDATE = 'QUESTION_UPDATE';
 export const QUESTION_DELETE = 'QUESTION_DELETE';
 
 export const GAME_LIST = 'GAME_LIST';
+export const GAME_CREATE = 'GAME_CREATE';
 export const GAME_UPDATE = 'GAME_UPDATE';
 
 export const GUESS_CREATE = 'GUESS_CREATE';

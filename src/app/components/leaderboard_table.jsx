@@ -11,9 +11,22 @@ const TableRowColumn = require('material-ui/lib/table/table-row-column');
 export default React.createClass({
   render: function () {
     return (
-      <ul>
-        {this.props.users.map(user => <li key={user.name}>{user.name}</li>)}
-      </ul>
+      <Table selectable={false}>
+        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          <TableRow>
+            <TableHeaderColumn>Player</TableHeaderColumn>
+            <TableHeaderColumn>Points</TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false}>
+          {this.props.users.map(user =>
+            <TableRow key={user.name}>
+              <TableRowColumn>{user.name}</TableRowColumn>
+              <TableRowColumn>{user.points}</TableRowColumn>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     );
   },
 })

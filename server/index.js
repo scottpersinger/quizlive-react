@@ -117,9 +117,11 @@ router.route('/game')
 		Game.findOne(function(err, game) {
 			if (err) {
 				res.send(err);
-			} else {
-				res.json(game.toObject());
-			}
+			} else if (game) {
+        res.json(game.toObject());
+      } else {
+        res.status(404).send();
+      }
 		})
 	})
 
