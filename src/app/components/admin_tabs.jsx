@@ -12,7 +12,7 @@ import LeaderboardTable from './leaderboard_table';
 import { connect } from 'react-redux';
 
 import { list, create, update, remove } from '../actions/questions';
-import { get_game, next_question, reset_game } from '../actions/game';
+import { get_game, next_question, create_game, reset_game } from '../actions/game';
 import { list_users } from '../actions/users';
 
 // Select the part of the Redux's global state to inject into the Component as props
@@ -92,6 +92,10 @@ const AdminTabs = React.createClass({
     this.props.dispatch(reset_game(this.props.game.id, this.props.token));
   },
 
+  createGame() {
+    this.props.dispatch(create_game(this.props.token));
+  },
+
   render() {
 	  let dialogActions = [
   		{ text: 'Cancel' },
@@ -102,10 +106,10 @@ const AdminTabs = React.createClass({
 	  	dialogActions.unshift({text:'Delete', onTouchTap: this.onDialogDelete});
 	  }
     console.log(this.props.users);
-    
+
     let game_question = '';
     let game_query = '';
-    if (this.props.game.current_question_index != null && this.props.game.current_question_index >= 0) {
+    if (this.props.game && this.props.game.current_question_index != null && this.props.game.current_question_index >= 0) {
       game_question = this.props.questions[this.props.game.current_question_index];
       if (game_question) {
         game_query = game_question.query;
@@ -114,18 +118,30 @@ const AdminTabs = React.createClass({
 	  return (
 	    <div>
 	      <Tabs>
-	        <Tab label="Game" >
-            <h1>Current Game</h1>
-            <h2>Question {this.props.game.current_question_index+1} of {this.props.game.total_questions}</h2>
-            <h3><i>"{game_query}"</i></h3>
-            <RaisedButton label="Next Question" primary={true} onTouchTap={this.showNextQuestion} />
-            <div>
-              <br />
-              <a href='#' onClick={this.resetGame}>Reset Game</a>
-            </div>
-            <h2>Leaderboard</h2>
-            {this.props.users.length > 0 ? <LeaderboardTable users={this.props.users} /> : ''}
+	        <Tab label="Game">
+            <div style={{padding: this.context.muiTheme.rawTheme.spacing.desktopGutter}}>
+              {this.props.game ?
+                <div>
+                  <h1>Current Game</h1>
+                  <h2>Question {this.props.game.current_question_index+1} of {this.props.game.total_questions}</h2>
+                  <h3><i>"{game_query}"</i></h3>
+                  <RaisedButton label="Next Question" primary={true} onTouchTap={this.showNextQuestion} />
+                  <div>
+                    <br />
+                    <a href='#' onClick={this.resetGame}>Reset Game</a>
+                  </div>
+                  <h2>Leaderboard</h2>
+                  {this.props.users.length > 0 ? <LeaderboardTable users={this.props.users} /> : ''}
+                </div>
+                :
+                <div>
+                  No game exists yet
+                  <br />
+                  <a href='#' onClick={this.createGame}>Create Game</a>
+                </div>
+              }
 
+            </div>
 	        </Tab>
 	        <Tab label="Questions">
             <div style={{padding: this.context.muiTheme.rawTheme.spacing.desktopGutter}}>

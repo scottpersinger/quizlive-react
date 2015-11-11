@@ -1,4 +1,4 @@
-import { handleAPIEvent as gameAPIUpdate } from './games';
+import { handleAPIEvent as gameAPIUpdate } from './game';
 import { handleAPIEvent as guessAPIUpdate } from './guesses';
 import { handleAPIEvent as userAPIUpdate } from './users';
 import { handleAPIEvent as questionAPIUpdate } from './questions';
