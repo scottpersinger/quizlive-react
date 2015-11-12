@@ -83,7 +83,7 @@ router.route('/questions/:id')
 
 router.route('/users')
 	.get(function(req, res) {
-		User.find(function(err, users) {
+		User.find({name: {$ne: 'admin'}}, function(err, users) {
 			if (err) {
 				res.send(err);
 			} else {
@@ -106,10 +106,13 @@ router.route('/users')
     router.route('/users/:name')
       .delete(function(req, res, next) {
         console.log('deleting user: ' + req.params.name);
-        User.findOneAndRemove({name: req.params.name}, function(err) {
+        User.findOne({name: req.params.name}, function(err, doc) {
           if (err) return next(err);
-          res.status(204).send();
-        })
+          doc.remove(function(err) {
+            if (err) return next(err);
+            res.status(204).send();
+          })
+        });
       });
 
 router.route('/game')
@@ -129,7 +132,7 @@ router.route('/game')
     if (req.headers['authorization'] === User.schema._admin_secret) {
       Game.remove({}, function() {
         Question.count({}, function(err, c) {
-          Game.create({total_questions:c, current_question_index:0, question:{}}, function(err, game) {
+          Game.create({total_questions:c, current_question_index:-1, question:{}}, function(err, game) {
             res.send(game.toObject());
           });
         });
@@ -143,16 +146,35 @@ router.route('/game')
     if (req.headers['authorization'] === User.schema._admin_secret) {
       Game.findOne({_id:req.body.id}, function(err, doc) {
         if (doc) {
-          doc.current_question_index = req.body.current_question_index;
-          Question.find({}, function(err, questions) {
-            if (doc.current_question_index >= 0 && doc.current_question_index < questions.length) {
-              doc.question = {query:questions[doc.current_question_index].query,
-                              answers:questions[doc.current_question_index].answers};
-            }
-          })
+
+          doc.question_eta = 10;
           doc.save(function() {
             res.send(doc.toObject());
           });
+
+          var interval = setInterval(function () {
+            if (doc.question_eta === 1) {
+              clearInterval(interval);
+
+              doc.question_eta = 0;
+              doc.current_question_index = req.body.current_question_index;
+              Question.find({}, function(err, questions) {
+                if (doc.current_question_index >= 0 && doc.current_question_index < questions.length) {
+                  doc.question = {question_id: questions[doc.current_question_index].id,
+                                  query:questions[doc.current_question_index].query,
+                                  answers:questions[doc.current_question_index].answers};
+                  console.log(questions[doc.current_question_index]);
+                }
+              })
+
+              doc.save();
+            }
+            else {
+              doc.question_eta = doc.question_eta -1;
+              doc.save();
+            }
+          }, 1000);
+
         } else {
           res.status(404).send("Game id not found");
         }
@@ -162,12 +184,12 @@ router.route('/game')
     }
   });
 
-router.route('/guess')
+router.route('/guesses')
 	.post(function(req, res) {
       async.waterfall([
         // make sure user hasn't already answered ...
         function(cb) {
-          Guess.find({user_id:req.body.user_id, question_index:req.body.question_index}, function(err, rows){
+          Guess.find({user_id:req.body.user_id, question_id:req.body.question_id}, function(err, rows){
             if (err) {
               cb(err);
               return;
@@ -225,17 +247,13 @@ router.route('/guess')
             },
             // increment user's points ...
             function(firstToAnswer, cb){
-              User.findByIdAndUpdate(
-                req.body.user_id,
-                {
-                  $inc: {
-                    points: firstToAnswer ? 5 : 1
-                  }
-                },
-                function (err, user) {
-                  cb(err);
-                }
-              );
+              User.findOne({name: req.body.user_id}, function(err, doc) {
+                if (err) return cb(err);
+                doc.points = (doc.points || 0) + (firstToAnswer ? 5 : 1);
+                doc.save(function(err) {
+                  return cb(err);
+                });
+              });
             }
           ], function(err){
             cb(err, true);
@@ -272,7 +290,7 @@ server.listen(app.get('port'), function() {
 var _subscriptions = {};
 
 function model_signals(action, modelName, doc) {
-  //console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
+  console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
   // Dispatch event to _subscriptions
   io.emit('notify', {resource: modelName.toLowerCase(), action: action, data: doc.toObject()});
 }

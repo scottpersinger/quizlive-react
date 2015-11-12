@@ -1,11 +1,12 @@
-import { GUESS_CREATE } from '../constants/actions'
+import { AUTH_LOGIN, GUESS_CREATE } from '../constants/actions'
 
-const initialState = {};
-
-export default function guesses(state = initialState, action) {
+export default function guesses(state={}, action) {
   switch (action.type) {
+    case AUTH_LOGIN:
+      return {};
+      
     case GUESS_CREATE:
-      return state;
+      return {...state, [action.payload.question_id]: action.payload};
 
     default:
       return state;

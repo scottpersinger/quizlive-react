@@ -56,7 +56,7 @@ describe("Guess CRUD works", function() {
 
 	it('allows a user to post a guess', function(done) {
 		request
-		  .post('/api/guess')
+		  .post('/api/guesses')
 		  .send({user_id: user_id, question_id: question_id, answer: "blue"})
 		  .expect(201, done);
 	});
@@ -65,13 +65,13 @@ describe("Guess CRUD works", function() {
 		async.series([
 			function(cb) {
 				request
-				  .post('/api/guess')
+				  .post('/api/guesses')
 				  .send({user_id: user_id, question_id: question_id, answer:"blue"})
 				  .expect(201, cb);
 			},
 			function(cb) {
 				request
-				  .post('/api/guess')
+				  .post('/api/guesses')
 				  .send({user_id: user_id, question_id: question_id, answer:"red"})
 				  .end(function(err, res) {
 				  	res.statusCode.should.be.equal(403);
@@ -85,7 +85,7 @@ describe("Guess CRUD works", function() {
 		async.series([
 			function(cb) {
 				request
-				  .post('/api/guess')
+				  .post('/api/guesses')
 				  .send({user_id: user_id, question_id: question_id, answer:"blue"})
 				  .expect(201, cb);
 			},
@@ -112,13 +112,13 @@ describe("Guess CRUD works", function() {
 			},
 			function(cb) {
 				request
-				  .post('/api/guess')
+				  .post('/api/guesses')
 				  .send({user_id: newUser._id, question_id: question_id, answer:"blue"})
 				  .expect(201, cb);
 			},
 			function(cb) {
 				request
-				  .post('/api/guess')
+				  .post('/api/guesses')
 				  .send({user_id: user_id, question_id: question_id, answer:"blue"})
 				  .expect(201, cb);
 			},

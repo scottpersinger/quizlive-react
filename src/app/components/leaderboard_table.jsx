@@ -22,7 +22,7 @@ export default React.createClass({
           {this.props.users.map(user =>
             <TableRow key={user.name}>
               <TableRowColumn>{user.name}</TableRowColumn>
-              <TableRowColumn>{user.points}</TableRowColumn>
+              <TableRowColumn>{user.points || 0}</TableRowColumn>
             </TableRow>
           )}
         </TableBody>

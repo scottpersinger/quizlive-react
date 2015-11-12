@@ -9,10 +9,6 @@ export default function (apiListener, store) {
     store.dispatch(gameAPIUpdate(data));
   });
 
-  apiListener.subscribe('guess', data => {
-    store.dispatch(guessAPIUpdate(data));
-  });
-
   apiListener.subscribe('question', data => {
     store.dispatch(questionAPIUpdate(data));
   });

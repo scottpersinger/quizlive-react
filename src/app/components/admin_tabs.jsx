@@ -19,7 +19,7 @@ import { list_users } from '../actions/users';
 function mapStateToProps(state) {
   return {
     questions: state.questions,
-    game: state.games,
+    game: state.game,
     users: state.users,
   };
 }
@@ -89,7 +89,7 @@ const AdminTabs = React.createClass({
   },
 
   resetGame() {
-    this.props.dispatch(reset_game(this.props.game.id, this.props.token));
+    this.props.dispatch(create_game(this.props.token));
   },
 
   createGame() {

@@ -8,6 +8,7 @@ import GameScreen from './game_screen';
 
 import { list_users } from '../actions/users';
 import { get_game } from '../actions/game';
+import { propose_answer } from '../actions/guesses';
 
 import { connect } from 'react-redux';
 
@@ -15,18 +16,30 @@ import { connect } from 'react-redux';
 function mapStateToProps(state) {
   return {
     users: state.users,
-    game: state.games,
+    game: state.game,
+    guesses: state.guesses,
   };
 }
 
 const GameTabs = React.createClass({
+
+  contextTypes: {
+    muiTheme: React.PropTypes.object.isRequired,
+  },
 
   componentWillMount() {
     this.props.dispatch(get_game());
     this.props.dispatch(list_users());
   },
 
+  makeGuess: function(guess) {
+    this.props.dispatch(propose_answer(this.props.game.question.question_id, guess));
+  },
+
   render() {
+    if (!this.props.game) {
+      return <div />;
+    }
 	  let user = _.find(this.props.users, u => u.name === this.props.username);
 	  console.log("GameTabs props ", this.props);
 	  console.log("User is ", user);
@@ -34,10 +47,18 @@ const GameTabs = React.createClass({
 	    <div>
 	      <Tabs>
 	        <Tab label="Game" >
-	          {<GameScreen question={this.props.game ? this.props.game.question : null} user={user ? user : {}} />}
+            <div style={{padding: this.context.muiTheme.rawTheme.spacing.desktopGutter}}>
+  	          <GameScreen question={this.props.game ? this.props.game.question : null}
+                          user={user ? user : {}}
+                          eta={this.props.game.question_eta}
+                          makeGuess={this.makeGuess}
+                          oldGuess={this.props.guesses[this.props.game.question.question_id]}/>
+            </div>
 	        </Tab>
 	        <Tab label="Leaderboard" >
-            {this.props.users.length > 0 ? <LeaderboardTable users={this.props.users} /> : ''}
+            <div style={{padding: this.context.muiTheme.rawTheme.spacing.desktopGutter}}>
+              {this.props.users.length > 0 ? <LeaderboardTable users={this.props.users} /> : ''}
+            </div>
 	        </Tab>
 	      </Tabs>
 

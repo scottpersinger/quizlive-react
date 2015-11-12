@@ -18,12 +18,12 @@ export default React.createClass({
 	};
     return (
     	<div>
-    	  <h2><i>{this.props.user.name}</i>: {this.props.points} pts</h2>
+    	  <h2><i>{this.props.user.name}</i>: {this.props.user.points || 0} pts {this.props.eta ? `; Next question ETA: ${this.props.eta} seconds` : ''}</h2>
     	  <div style={divStyle}>
     	  	  {this.props.question ? this.props.question.query : 'Game will start soon...'}
     	  </div>
     	  <div>
-    	  	{this.props.question ? <AnswersList answers={this.props.question.answers} /> : ''}
+    	  	{this.props.question ? <AnswersList answers={this.props.question.answers} makeGuess={this.props.makeGuess} oldGuess={this.props.oldGuess}/> : ''}
     	  </div>
     	</div>
     );

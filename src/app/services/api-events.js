@@ -29,6 +29,7 @@ class APIEventListener extends EventEmitter {
   }
 
   _handleNotify(data) {
+    console.debug(data);
     this.emit(data.resource, data);
   }
 
