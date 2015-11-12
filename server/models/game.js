@@ -7,7 +7,7 @@ var Question     = require('./question');
 
 var GameSchema   = new Schema({
     current_question_index: Number,
-    question: {query:String, answers:[String], question_id:String},
+    question: {query:String, answers:[String], question_id:String, first_correct:String},
     question_eta: Number,
     total_questions: Number
 });

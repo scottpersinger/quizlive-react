@@ -31,7 +31,7 @@ var router = express.Router();
 
 router.use(function(req, res, next) {
     // do logging
-    console.log(req.path, " ", req.body);
+    //console.log(req.path, " ", req.body);
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -133,7 +133,14 @@ router.route('/game')
       Game.remove({}, function() {
         Question.count({}, function(err, c) {
           Game.create({total_questions:c, current_question_index:-1, question:{}}, function(err, game) {
-            res.send(game.toObject());
+            User.find({}).then(function(users) {
+              async.map(users, function(user, cb) {
+                user.points = 0;
+                user.save().then(cb);
+              }, function() {
+                res.send(game.toObject());
+              });
+            });
           });
         });
       });
@@ -147,7 +154,7 @@ router.route('/game')
       Game.findOne({_id:req.body.id}, function(err, doc) {
         if (doc) {
 
-          doc.question_eta = 10;
+          doc.question_eta = 5;
           doc.save(function() {
             res.send(doc.toObject());
           });
@@ -251,7 +258,12 @@ router.route('/guesses')
                 if (err) return cb(err);
                 doc.points = (doc.points || 0) + (firstToAnswer ? 5 : 1);
                 doc.save(function(err) {
-                  return cb(err);
+                  Game.findOne({}).then(function(game) {
+                    game.question.first_correct = req.body.user_id;
+                    console.log("Looked up game ", game.toObject());
+                    game.save();
+                    return cb(err);
+                  });
                 });
               });
             }

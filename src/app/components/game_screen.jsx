@@ -15,10 +15,17 @@ export default React.createClass({
   	let divStyle = {
   		fontSize: '20px',
   		padding:'10px',
-	};
+	  };
+    let nextMsg = {
+      backgroundColor: 'yellow',
+      textAlign: 'center',
+    }
     return (
     	<div>
-    	  <h2><i>{this.props.user.name}</i>: {this.props.user.points || 0} pts {this.props.eta ? `; Next question ETA: ${this.props.eta} seconds` : ''}</h2>
+    	  <h2><i>{this.props.user.name}</i>: {this.props.user.points || 0} pts</h2>
+        <div style={nextMsg}>
+          {this.props.eta ? `Next question in ${this.props.eta} seconds` : ''}
+        </div>
     	  <div style={divStyle}>
     	  	  {this.props.question ? this.props.question.query : 'Game will start soon...'}
     	  </div>

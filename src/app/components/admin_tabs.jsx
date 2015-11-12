@@ -115,6 +115,8 @@ const AdminTabs = React.createClass({
         game_query = game_question.query;
       }
     }
+    let floatRight = {float:'right'};
+
 	  return (
 	    <div>
 	      <Tabs>
@@ -123,7 +125,12 @@ const AdminTabs = React.createClass({
               {this.props.game ?
                 <div>
                   <h1>Current Game</h1>
-                  <h2>Question {this.props.game.current_question_index+1} of {this.props.game.total_questions}</h2>
+                  <div style={floatRight}>
+                    First correct: <b>{this.props.game.question.first_correct}</b>
+                  </div>
+                  <h2>Question {this.props.game.current_question_index+1} of {this.props.game.total_questions}
+                  &nbsp;({this.props.game.question_eta})
+                  </h2>
                   <h3><i>"{game_query}"</i></h3>
                   <RaisedButton label="Next Question" primary={true} onTouchTap={this.showNextQuestion} />
                   <div>
