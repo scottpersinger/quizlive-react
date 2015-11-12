@@ -3,7 +3,6 @@ import { QUESTION_LIST, QUESTION_CREATE, QUESTION_UPDATE, QUESTION_DELETE } from
 import _ from 'lodash'
 
 export default function questions(state = [], action) {
-
   switch (action.type) {
     case QUESTION_LIST:
       return action.payload;

@@ -20,7 +20,7 @@ class APIEventListener extends EventEmitter {
     socket.on('reconnect_error', err => { console.debug(`socket reconnect_error: ${err}`); });
     socket.on('reconnect_failed', attempts => { console.debug(`socket reconnect_failed event; attempts: ${attempts}`); });
 
-    socket.on('notify', this._handleNotify.bind(this));
+    socket.on('publish', this._handleNotify.bind(this));
   }
 
   _handleReconnect(attempts) {
@@ -29,13 +29,11 @@ class APIEventListener extends EventEmitter {
   }
 
   _handleNotify(data) {
-    console.debug(data);
+    console.debug("[WS] ", data);
     this.emit(data.resource, data);
   }
 
   subscribe(resource, handler) {
-    console.log('subscribe', arguments);
-
     // only one subscription per resource
     if (EventEmitter.listenerCount(this, resource) !== 0) {
       throw new Error('api-listener: Cannot subscribe to resource "' + resource + '" more than once.');

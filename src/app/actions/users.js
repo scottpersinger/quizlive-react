@@ -2,7 +2,7 @@ import { API_BASE_URL } from '../config';
 
 import { USERS_LIST, USERS_CREATE, USERS_UPDATE, USERS_DELETE } from '../constants/actions';
 
-export function handleAPIEvent(event) {
+export function userAPIUpdate(event) {
   switch(event.action) {
     case 'create':
       return {type: USERS_CREATE, payload: event.data};
@@ -14,7 +14,7 @@ export function handleAPIEvent(event) {
 }
 
 export function list_users() {
-  return dispatch => {
+  return function(dispatch) {
     console.log("Fetching users");
     fetch(API_BASE_URL + 'api/users')
     .then(response => response.json())

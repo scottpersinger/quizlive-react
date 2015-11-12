@@ -304,13 +304,19 @@ var _subscriptions = {};
 function model_signals(action, modelName, doc) {
   console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
   // Dispatch event to _subscriptions
-  io.emit('notify', {resource: modelName.toLowerCase(), action: action, data: doc.toObject()});
+  io.emit('publish', {resource: modelName.toLowerCase(), action: action, data: doc.toObject()});
 }
 require('./models/signals')(models, model_signals);
 
 
 io.on('connection', function(socket) {
   console.log('socket connection established');
+
+  socket.on('subscribe', function(resource) {
+    // TODO: Add authorization base on a client token
+    console.log("[SUBSCRIBE] ", resource);
+  });
 });
+
 
 module.exports = {app: app, mongoose: mongoose};
