@@ -115,7 +115,7 @@ const AdminTabs = React.createClass({
         game_query = game_question.query;
       }
     }
-    let floatRight = {float:'right'};
+    let floatRight = {float:'right', paddingRight:'300px'};
 
 	  return (
 	    <div>
