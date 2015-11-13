@@ -17,9 +17,7 @@ utils.setup_schema(GameSchema);
 
 GameSchema.pre('save', function(next) {
 	var doc = this;
-	console.log("Game presave");
 	if (!this.total_questions) {
-		console.log("Counting questions");
 		Question.count({}, function(err, c) {
 			console.log("Counted ", c, " questions");
 			doc.total_questions = c;

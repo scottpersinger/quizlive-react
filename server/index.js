@@ -176,9 +176,7 @@ router.route('/game')
             res.send(doc.toObject());
           });
 
-          var interval = setInterval(function () {
-            if (doc.question_eta === 1) {
-
+          setTimeout(function() {
               doc.question_eta = 0;
               doc.current_question_index = req.body.current_question_index;
               Question.find({}, function(err, questions) {
@@ -187,19 +185,10 @@ router.route('/game')
                                   query:questions[doc.current_question_index].query,
                                   answers:questions[doc.current_question_index].answers};
                   console.log(questions[doc.current_question_index]);
+                  doc.save();
                 }
-              })
-
-              doc.save();
-            }
-            else {
-              doc.question_eta = doc.question_eta -1;
-              doc.save();
-              if (doc.question_eta <= -10) {
-                clearInterval(interval);
-              }
-            }
-          }, 1000);
+              });
+          }, 3000);
 
         } else {
           res.status(404).send("Game id not found");
