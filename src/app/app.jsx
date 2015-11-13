@@ -1,12 +1,13 @@
 (function () {
+  require("babel-polyfill");
+  require('whatwg-fetch');
+
   let React = require('react');
   let ReactDOM = require('react-dom');
   let injectTapEventPlugin = require('react-tap-event-plugin');
   let Main = require('./components/main.jsx'); // Our custom react component
 
   let Provider = require('react-redux').Provider;
-
-  require('whatwg-fetch');
 
   //Needed for React Developer Tools
   window.React = React;
