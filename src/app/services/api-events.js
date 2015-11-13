@@ -2,13 +2,13 @@ import { EventEmitter } from 'events';
 
 import io from 'socket.io-client';
 
-import { API_BASE_URL } from '../config.js';
+import { WS_BASE_URL } from '../config.js';
 
 class APIEventListener extends EventEmitter {
   constructor() {
     super();
 
-    let socket = this.socket = io(API_BASE_URL, {transports:['websocket']});
+    let socket = this.socket = io(WS_BASE_URL, {transports:['websocket']});
 
     // attach core event handlers
     socket.on('connect', () => { console.debug('socket connect'); this.emit('connect'); });

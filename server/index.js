@@ -117,10 +117,12 @@ router.route('/users')
         console.log('deleting user: ' + req.params.name);
         User.findOne({name: req.params.name}, function(err, doc) {
           if (err) return next(err);
-          doc.remove(function(err) {
-            if (err) return next(err);
-            res.status(204).send();
-          })
+          if (doc) {
+            doc.remove(function(err) {
+              if (err) return next(err);
+              res.status(204).send();
+            })
+          }
         });
       });
 
