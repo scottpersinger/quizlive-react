@@ -24,7 +24,7 @@
   answers: ['John Rutsey','Tom Cochrane','Jeff Jones'],
   answer_index: 3
 }, {
-  question: 'Whom of the following was not involved in the ward of 1812?',
+  question: 'Whom of the following was not involved in the war of 1812?',
   answers: ['General Wolfe', 'Laura Secord', 'General Brock', 'Tecumseh'],
   answer_index: 1
 }, {
