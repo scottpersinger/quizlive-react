@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(express.static('build'));
 app.set('views', '.');
 app.set('view engine', 'ejs');
+
 app.get('/', function(request, response) {
   response.render('build/index');
 });
@@ -306,8 +307,6 @@ app.set('port', process.env.PORT || 5000);
 server.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-var _subscriptions = {};
 
 function model_signals(action, modelName, doc) {
   console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
