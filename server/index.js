@@ -171,7 +171,7 @@ router.route('/game')
       Game.findOne({_id:req.body.id}, function(err, doc) {
         if (doc) {
 
-          doc.question_eta = 5;
+          doc.question_eta = 3;
           doc.save(function() {
             res.send(doc.toObject());
           });
@@ -286,6 +286,8 @@ router.route('/guesses')
                       }
                       return cb(err);
                     });
+                  } else {
+                      return cb();
                   }
                 });
               });
