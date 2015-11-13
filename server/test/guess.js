@@ -10,7 +10,7 @@ var models = require('../models');
 
 request = request(app);
 
-describe("Guess CRUD works", function() {
+describe("Guesses...: ", function() {
   var user_id, question_id;
 
 	beforeEach(function(done) {
@@ -33,7 +33,7 @@ describe("Guess CRUD works", function() {
                   name: "scott",
                   points: 0
                 }, function(err, user){
-                  user_id = user._id;
+                  user_id = user.name;
                   cb(err);
                 });
               });
@@ -90,7 +90,7 @@ describe("Guess CRUD works", function() {
 				  .expect(201, cb);
 			},
 			function(cb) {
-        models.User.findById(user_id, function(err, user){
+        models.User.findOne({name:user_id}, function(err, user){
           should(user.points).be.exactly(5);
           cb();
         });
@@ -113,7 +113,7 @@ describe("Guess CRUD works", function() {
 			function(cb) {
 				request
 				  .post('/api/guesses')
-				  .send({user_id: newUser._id, question_id: question_id, answer:"blue"})
+				  .send({user_id: newUser.name, question_id: question_id, answer:"blue"})
 				  .expect(201, cb);
 			},
 			function(cb) {
@@ -123,7 +123,7 @@ describe("Guess CRUD works", function() {
 				  .expect(201, cb);
 			},
 			function(cb) {
-        models.User.findById(user_id, function(err, user){
+        models.User.findOne({name:user_id}, function(err, user){
           should(user.points).be.exactly(1);
           cb();
         });

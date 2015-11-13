@@ -9,7 +9,7 @@ var models = require('../models');
 
 request = request(app);
 
-describe("Game CRUD works", function() {
+describe("Game CRUD...", function() {
 	before(function(done) {
 		mongoose.connection.close(function() {
 			mongoose.connect('mongodb://localhost', function() {
@@ -27,6 +27,7 @@ describe("Game CRUD works", function() {
 		  .send({current_question_index:0})
 		  .expect(403, done);
 	});
+
 
 	it('does allow the admin to POST a game', function(done) {
 		request
@@ -50,6 +51,7 @@ describe("Game CRUD works", function() {
 				  .set('Authorization', models.User.schema._admin_secret)
 				  .send({id: res.body.id, current_question_index:0})
 				  .expect(200, function(err, res) {
+				  	console.log("Game ", res.body);
 				  	res.body.should.have.property('current_question_index');
 				  	res.body.current_question_index.should.equal(0);
 				  	res.body.should.have.property('question');

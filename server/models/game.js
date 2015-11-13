@@ -14,14 +14,21 @@ var GameSchema   = new Schema({
 
 utils.setup_schema(GameSchema);
 
+
 GameSchema.pre('save', function(next) {
-	console.log("Running Game presave");
 	var doc = this;
-	Question.count({}, function(err, c) {
-		console.log("Found ", c, " questions");
-		doc.total_questions = c;
+	console.log("Game presave");
+	if (!this.total_questions) {
+		console.log("Counting questions");
+		Question.count({}, function(err, c) {
+			console.log("Counted ", c, " questions");
+			doc.total_questions = c;
+			next();
+		});
+	} else {
 		next();
-	});
+	}
 });
+
 
 module.exports = mongoose.model('Game', GameSchema);

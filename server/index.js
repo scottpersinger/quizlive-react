@@ -141,18 +141,24 @@ router.route('/game')
 
   .post(function(req, res) {
     if (req.headers['authorization'] === User.schema._admin_secret) {
+      console.log("Remove the game");
       Game.remove({}, function() {
-        Question.count({}, function(err, c) {
-          Game.create({total_questions:c, current_question_index:-1, question:{}}, function(err, game) {
-            User.find({}).then(function(users) {
-              async.map(users, function(user, cb) {
-                user.points = 0;
-                user.save().then(cb);
-              }, function() {
-                res.send(game.toObject());
+        Guess.remove({}, function() {
+          Question.count({}, function(err, c) {
+            console.log("Create the game");
+            Game.create({total_questions:c, current_question_index:-1, question:{}}, function(err, game) {
+              console.log("Clear user points");
+              User.find({}).then(function(users) {
+                async.map(users, function(user, cb) {
+                  user.points = 0;
+                  user.save().then(cb);
+                }, function() {
+                  console.log("Send the game");
+                  res.send(game.toObject());
+                });
               });
             });
-          });
+          });         
         });
       });
     } else {
@@ -269,14 +275,18 @@ router.route('/guesses')
             function(firstToAnswer, cb){
               User.findOne({name: req.body.user_id}, function(err, doc) {
                 if (err) return cb(err);
+                console.log("Setting a users points ", doc.toObject());
                 doc.points = (doc.points || 0) + (firstToAnswer ? 5 : 1);
                 doc.save(function(err) {
-                  Game.findOne({}).then(function(game) {
-                    game.question.first_correct = req.body.user_id;
-                    console.log("Looked up game ", game.toObject());
-                    game.save();
-                    return cb(err);
-                  });
+                  if (firstToAnswer) {
+                    Game.findOne({}).then(function(game) {
+                      if (game && !game.question.first_correct) {
+                        game.question.first_correct = req.body.user_id;
+                        game.save();
+                      }
+                      return cb(err);
+                    });
+                  }
                 });
               });
             }
@@ -313,7 +323,7 @@ server.listen(app.get('port'), function() {
 });
 
 function model_signals(action, modelName, doc) {
-  console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
+  //console.log("Model ", modelName, ": ", action, ": ", doc.toObject());
   // Dispatch event to _subscriptions
   io.emit('publish', {resource: modelName.toLowerCase(), action: action, data: doc.toObject()});
 }
