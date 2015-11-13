@@ -1,13 +1,14 @@
 var fs = require('fs');
 var async = require('async');
 var mongoose   = require('mongoose');
+var http = require('https');
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost');
 
 var models = require('./models');
 
-fs.readFile(__dirname + '/data/questions.js', function(err, buffer) {
-	var data = buffer.toString('utf8');
-	var qs = eval(data);
+var host = 'https://dl.dropboxusercontent.com/u/1892875/questions.js';
+
+function insert_questions(qs){
 	models.Question.remove({}).then(function() {
 		async.map(qs, function(q, cb) {
 			console.log(q);
@@ -19,4 +20,15 @@ fs.readFile(__dirname + '/data/questions.js', function(err, buffer) {
 			});
 		});
 	});
+}
+
+http.get(host, function(res) {
+	var body = '';
+	res.on('data', function(chunk) {
+		body = body + chunk;
+	});
+	res.on('end', function() {
+		insert_questions(eval(body));
+	});
 });
+
