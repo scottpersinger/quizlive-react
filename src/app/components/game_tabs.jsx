@@ -33,7 +33,9 @@ const GameTabs = React.createClass({
   },
 
   makeGuess: function(guess) {
-    this.props.dispatch(propose_answer(this.props.game.question.question_id, guess));
+    if (this.props.game.question_eta > -10) {
+      this.props.dispatch(propose_answer(this.props.game.question.question_id, guess));
+    }
   },
 
   render() {

@@ -30552,7 +30552,9 @@
 	  },
 	
 	  makeGuess: function makeGuess(guess) {
-	    this.props.dispatch((0, _actionsGuesses.propose_answer)(this.props.game.question.question_id, guess));
+	    if (this.props.game.question_eta > -10) {
+	      this.props.dispatch((0, _actionsGuesses.propose_answer)(this.props.game.question.question_id, guess));
+	    }
 	  },
 	
 	  render: function render() {
@@ -32438,8 +32440,14 @@
 	      padding: '10px'
 	    };
 	    var nextMsg = {
-	      backgroundColor: 'yellow',
-	      textAlign: 'center'
+	      textAlign: 'center',
+	      fontSize: '1.5em',
+	      color: 'orange'
+	    };
+	    var countDown = {
+	      textAlign: 'center',
+	      fontSize: '1.5em',
+	      color: 'black'
 	    };
 	    return React.createElement(
 	      'div',
@@ -32459,7 +32467,12 @@
 	      React.createElement(
 	        'div',
 	        { style: nextMsg },
-	        this.props.eta ? 'Next question in ' + this.props.eta + ' seconds' : ''
+	        this.props.eta >= 0 ? 'Next question in ' + this.props.eta + ' seconds' : ''
+	      ),
+	      React.createElement(
+	        'div',
+	        { style: countDown },
+	        this.props.eta < 0 ? 10 + this.props.eta + ' secs left to answer' : ''
 	      ),
 	      React.createElement(
 	        'div',
@@ -32470,7 +32483,8 @@
 	        'div',
 	        null,
 	        this.props.question ? React.createElement(_answers_list2['default'], { answers: this.props.question.answers, makeGuess: this.props.makeGuess, oldGuess: this.props.oldGuess }) : ''
-	      )
+	      ),
+	      React.createElement('div', { style: countDown })
 	    );
 	  }
 	});

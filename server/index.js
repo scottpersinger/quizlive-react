@@ -170,7 +170,6 @@ router.route('/game')
 
           var interval = setInterval(function () {
             if (doc.question_eta === 1) {
-              clearInterval(interval);
 
               doc.question_eta = 0;
               doc.current_question_index = req.body.current_question_index;
@@ -188,6 +187,9 @@ router.route('/game')
             else {
               doc.question_eta = doc.question_eta -1;
               doc.save();
+              if (doc.question_eta <= -10) {
+                clearInterval(interval);
+              }
             }
           }, 1000);
 
