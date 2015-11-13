@@ -13,10 +13,18 @@ var io = require('socket.io')(server);
 app.use(cors()); // Allow from anywhere!
 app.use(bodyParser.json());
 
+app.use(express.static('build'));
+app.set('views', '.');
+app.set('view engine', 'ejs');
+app.get('/', function(request, response) {
+  response.render('build/index');
+});
+
+
 // Connect to mongo
 
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://localhost');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost');
 
 var models = require('./models');
 

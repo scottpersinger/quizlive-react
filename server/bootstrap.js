@@ -1,7 +1,7 @@
 var fs = require('fs');
 var async = require('async');
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://localhost');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost');
 
 var models = require('./models');
 

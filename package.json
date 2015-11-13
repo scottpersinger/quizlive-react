@@ -25,10 +25,19 @@
     "webpack-dev-server": "^1.10.1"
   },
   "dependencies": {
+    "async": "^1.5.0",
+    "body-parser": "^1.14.1",
+    "cors": "^2.7.1",
+    "ejs": "^2.3.4",
+    "es6-promise": "^3.0.2",
     "exports-loader": "^0.6.2",
+    "express": "^4.13.3",
     "imports-loader": "^0.6.5",
     "lodash": "^3.10.1",
     "material-ui": "^0.13.0",
+    "mocha": "^2.3.3",
+    "mongoose": "^4.2.4",
+    "mongoose-unique-validator": "^0.6.0",
     "react": "^0.14.2",
     "react-addons-create-fragment": "^0.14.2",
     "react-addons-linked-state-mixin": "^0.14.2",
@@ -40,7 +49,10 @@
     "react-tap-event-plugin": "^0.2.1",
     "redux": "^3.0.4",
     "redux-thunk": "^1.0.0",
+    "should": "^7.1.1",
+    "socket.io": "^1.3.7",
     "socket.io-client": "^1.3.7",
+    "supertest": "^1.1.0",
     "whatwg-fetch": "^0.10.1"
   }
 }
