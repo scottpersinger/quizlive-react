@@ -36615,7 +36615,7 @@
 	      fontSize: '1.5em',
 	      color: 'black'
 	    };
-	    console.log('====> ' + this.props.question.query);
+	
 	    return React.createElement(
 	      'div',
 	      null,
@@ -39948,6 +39948,10 @@
 	  },
 	
 	  _handleTouchTap: function _handleTouchTap() {
+	    if (!this.state.name) {
+	      alert('Enter a non-blank Name');
+	      return;
+	    }
 	    this.props.dispatch((0, _actionsAuth.login)(this.state.name));
 	  }
 	
@@ -53091,7 +53095,12 @@
 	  if (state === undefined) state = {};
 	
 	  switch (action.type) {
+	    // reset all guesses on login
 	    case _constantsActions.AUTH_LOGIN:
+	      return {};
+	
+	    // reset all guesses on game create
+	    case _constantsActions.GAME_CREATE:
 	      return {};
 	
 	    case _constantsActions.GUESS_CREATE:
@@ -53204,7 +53213,7 @@
 	
 	    _get(Object.getPrototypeOf(APIEventListener.prototype), 'constructor', this).call(this);
 	
-	    var socket = this.socket = (0, _socketIoClient2['default'])(_configJs.API_BASE_URL, { transports: ['websocket'] });
+	    var socket = this.socket = (0, _socketIoClient2['default'])(_configJs.WS_BASE_URL, { transports: ['websocket'] });
 	
 	    // attach core event handlers
 	    socket.on('connect', function () {
