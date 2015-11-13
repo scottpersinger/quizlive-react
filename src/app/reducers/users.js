@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { USERS_LIST, USERS_CREATE, USERS_UPDATE, USERS_DELETE } from '../constants/actions'
 
 function orderByPoints(users) {
-  return _.sortBy(users, 'points').reverse();
+  return _.sortBy(users, user => -user.points);
 }
 
 export default function users(state=[], action) {

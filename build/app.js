@@ -40094,7 +40094,9 @@
 	var _constantsActions = __webpack_require__(375);
 	
 	function orderByPoints(users) {
-	  return _lodash2['default'].sortBy(users, 'points').reverse();
+	  return _lodash2['default'].sortBy(users, function (user) {
+	    return -user.points;
+	  });
 	}
 	
 	function users(state, action) {
