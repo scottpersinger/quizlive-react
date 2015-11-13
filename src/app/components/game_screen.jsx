@@ -20,6 +20,7 @@ export default React.createClass({
       backgroundColor: 'yellow',
       textAlign: 'center',
     }
+    console.log('====> ' + this.props.question.query);
     return (
     	<div>
     	  <h2><i>{this.props.user.name}</i>: {this.props.user.points || 0} pts</h2>
@@ -27,7 +28,7 @@ export default React.createClass({
           {this.props.eta ? `Next question in ${this.props.eta} seconds` : ''}
         </div>
     	  <div style={divStyle}>
-    	  	  {this.props.question ? this.props.question.query : 'Game will start soon...'}
+    	  	  {this.props.question && this.props.question.query ? this.props.question.query : 'Game will start soon...'}
     	  </div>
     	  <div>
     	  	{this.props.question ? <AnswersList answers={this.props.question.answers} makeGuess={this.props.makeGuess} oldGuess={this.props.oldGuess}/> : ''}
