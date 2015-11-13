@@ -26,7 +26,7 @@ export default React.createClass({
       fontSize:'1.5em',
       color:'black',
     }
-    console.log('====> ' + this.props.question.query);
+
     return (
     	<div>
     	  <h2><i>{this.props.user.name}</i>: {this.props.user.points || 0} pts</h2>

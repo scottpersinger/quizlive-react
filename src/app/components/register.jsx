@@ -32,6 +32,10 @@ const Register = React.createClass({
   },
 
   _handleTouchTap() {
+    if (!this.state.name) {
+      alert('Enter a non-blank Name');
+      return;
+    }
   	this.props.dispatch(login(this.state.name));
   },
 
