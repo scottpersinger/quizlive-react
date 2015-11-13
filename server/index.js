@@ -123,6 +123,9 @@ router.route('/users')
               res.status(204).send();
             })
           }
+          else {
+            res.status(404).send();
+          }
         });
       });
 
@@ -158,7 +161,7 @@ router.route('/game')
                 });
               });
             });
-          });         
+          });
         });
       });
     } else {
