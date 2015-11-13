@@ -22703,7 +22703,9 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var API_BASE_URL = window.location.hostname + ':' + window.location.port + '/';
+	var WS_BASE_URL = window.location.hostname + ':' + window.location.port + '/';
+	exports.WS_BASE_URL = WS_BASE_URL;
+	var API_BASE_URL = window.location.protocol + '//' + WS_BASE_URL;
 	exports.API_BASE_URL = API_BASE_URL;
 
 /***/ },
