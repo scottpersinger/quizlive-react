@@ -24,7 +24,8 @@ export default React.createClass({
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
             {this.props.answers.map((answer, idx) =>
-              <TableRow key={idx} style={{backgroundColor: this._getRowStyle(this.props.oldGuess, answer)}} selected={this.props.oldGuess && this.props.oldGuess.answer === answer}>
+              <TableRow key={idx} style={{backgroundColor: this._getRowStyle(this.props.oldGuess, answer)}} 
+                selected={this.props.oldGuess && this.props.oldGuess.answer === answer}>
                 return <TableRowColumn>{answer}</TableRowColumn>
               </TableRow>
             )}
@@ -44,14 +45,9 @@ export default React.createClass({
           return 'red';
         }
       }
-      if (guess.correct === answer) {
-
-      }
+    } else {
+      return this.props.etaDone ? 'gray' : '';
     }
-    else {
-      return null;
-    }
-    return guess && guess.answer === answer ? 'yellow' : null;
   },
 
   _handleClick: function(rowIdxs) {

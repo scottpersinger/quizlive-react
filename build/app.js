@@ -36659,6 +36659,7 @@
 	      color: 'black'
 	    };
 	
+	    var etaDone = this.state.remainingEta === null;
 	    return React.createElement(
 	      'div',
 	      null,
@@ -36695,6 +36696,7 @@
 	        this.props.question ? React.createElement(_answers_list2['default'], { answers: this.props.question.answers,
 	          makeGuess: this.props.makeGuess,
 	          oldGuess: this.props.oldGuess,
+	          etaDone: etaDone,
 	          answerable: !!this.state.remainingEta }) : ''
 	      )
 	    );
@@ -36750,7 +36752,8 @@
 	          this.props.answers.map(function (answer, idx) {
 	            return React.createElement(
 	              TableRow,
-	              { key: idx, style: { backgroundColor: _this._getRowStyle(_this.props.oldGuess, answer) }, selected: _this.props.oldGuess && _this.props.oldGuess.answer === answer },
+	              { key: idx, style: { backgroundColor: _this._getRowStyle(_this.props.oldGuess, answer) },
+	                selected: _this.props.oldGuess && _this.props.oldGuess.answer === answer },
 	              'return ',
 	              React.createElement(
 	                TableRowColumn,
@@ -36773,11 +36776,9 @@
 	          return 'red';
 	        }
 	      }
-	      if (guess.correct === answer) {}
 	    } else {
-	      return null;
+	      return this.props.etaDone ? 'gray' : '';
 	    }
-	    return guess && guess.answer === answer ? 'yellow' : null;
 	  },
 	
 	  _handleClick: function _handleClick(rowIdxs) {
@@ -37769,7 +37770,6 @@
 	    var _this = this;
 	
 	    if (nextProps.game && nextProps.game.question) {
-	      console.log("Getting question: ", nextProps.game.question.query);
 	      if (!(nextProps.game.question.query in this.state.seen_questions)) {
 	        (function () {
 	          _this.state.seen_questions[nextProps.game.question.query] = true;
@@ -37833,7 +37833,6 @@
 	  },
 	
 	  render: function render() {
-	    console.log("Admin render, state >", this.state);
 	    var dialogActions = [{ text: 'Cancel' }, { text: 'Submit', onTouchTap: this.onDialogSubmit, ref: 'submit' }];
 	    var dialogTitle = this.state.current_question ? 'Edit Question' : 'New Question';
 	    if (this.state.current_question) {

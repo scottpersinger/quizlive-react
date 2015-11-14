@@ -73,6 +73,7 @@ export default React.createClass({
       color:'black',
     }
 
+    let etaDone = (this.state.remainingEta === null);
     return (
     	<div>
     	  <h2><i>{this.props.user.name}</i>: {this.props.user.points || 0} pts</h2>
@@ -89,6 +90,7 @@ export default React.createClass({
     	  	{this.props.question ? <AnswersList answers={this.props.question.answers}
                                               makeGuess={this.props.makeGuess}
                                               oldGuess={this.props.oldGuess}
+                                              etaDone={etaDone}
                                               answerable={!!this.state.remainingEta} /> : ''}
     	  </div>
     	</div>
