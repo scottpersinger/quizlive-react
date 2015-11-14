@@ -45,8 +45,9 @@ export default React.createClass({
 
       let remainingIntervalId = window.setInterval(function () {
         let newEta = this.state.remainingEta - 1;
-        if (newEta === 0) {
-          clearInterval(this.state.remainingIntervalId);
+        console.log("Set new eta to ", newEta);
+        if (newEta <= 0 || this.props.oldGuess) {
+          clearInterval(remainingIntervalId);
           this.setState({remainingEta: null, remainingIntervalId: null});
         }
         else {
