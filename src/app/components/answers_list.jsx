@@ -18,7 +18,7 @@ export default React.createClass({
 
     return (
     	<div>
-        <Table selectable={!this.props.oldGuess} onRowSelection={this._handleClick} style={{border: '1px solid #ddd'}}>
+        <Table selectable={!this.props.oldGuess && this.props.answerable} onRowSelection={this._handleClick} style={{border: '1px solid #ddd'}}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow />
           </TableHeader>

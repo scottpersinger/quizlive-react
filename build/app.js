@@ -36600,6 +36600,63 @@
 	exports['default'] = React.createClass({
 	  displayName: 'game_screen',
 	
+	  getInitialState: function getInitialState() {
+	    return {
+	      nextEta: null,
+	      nextIntervalId: null,
+	      remainingEta: null,
+	      remainingIntervalId: null
+	    };
+	  },
+	
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    var _this = this;
+	
+	    if (nextProps.eta > 0) {
+	
+	      // clear any timers that might be outstanding
+	      if (this.state.nextEta) {
+	        clearInterval(this.state.nextIntervalId);
+	        this.setState({ nextEta: null, nextIntervalId: null });
+	      }
+	      if (this.state.remainingEta) {
+	        clearInterval(this.state.nextIntervalId);
+	        this.setState({ nextEta: null, nextIntervalId: null });
+	      }
+	
+	      var nextIntervalId = window.setInterval(function () {
+	        var newEta = _this.state.nextEta - 1;
+	        if (newEta === 0) {
+	          clearInterval(_this.state.nextIntervalId);
+	          _this.setState({ nextEta: null, nextIntervalId: null });
+	        } else {
+	          _this.setState({ nextEta: newEta });
+	        }
+	      }, 1000);
+	      this.setState({ nextEta: nextProps.eta, nextIntervalId: nextIntervalId });
+	    } else if (nextProps.question.query && nextProps.question.query !== this.props.question.query) {
+	      // clear question countdown if it still exists
+	      if (this.state.nextEta) {
+	        clearInterval(this.state.nextIntervalId);
+	        this.setState({ nextEta: null, nextIntervalId: null });
+	      }
+	
+	      var remainingIntervalId = window.setInterval((function () {
+	        var newEta = this.state.remainingEta - 1;
+	        if (newEta === 0) {
+	          clearInterval(this.state.remainingIntervalId);
+	          this.setState({ remainingEta: null, remainingIntervalId: null });
+	        } else {
+	          this.setState({ remainingEta: newEta });
+	        }
+	      }).bind(this), 1000);
+	      this.setState({ remainingEta: 10, remainingIntervalId: remainingIntervalId });
+	    } else if (nextProps.oldGuess) {
+	      clearInterval(this.state.remainingIntervalId);
+	      this.setState({ remainingEta: null, remainingIntervalId: null });
+	    }
+	  },
+	
 	  render: function render() {
 	    var divStyle = {
 	      fontSize: '20px',
@@ -36634,12 +36691,12 @@
 	      React.createElement(
 	        'div',
 	        { style: nextMsg },
-	        this.props.eta >= 0 ? 'Next question in ' + this.props.eta + ' seconds' : ''
+	        this.state.nextEta !== null ? 'Next question in ' + this.state.nextEta + ' seconds' : ''
 	      ),
 	      React.createElement(
 	        'div',
 	        { style: countDown },
-	        this.props.eta < 0 ? 10 + this.props.eta + ' secs left to answer' : ''
+	        this.state.remainingEta !== null && !this.props.oldGuess ? this.state.remainingEta + ' secs left to answer' : ''
 	      ),
 	      React.createElement(
 	        'div',
@@ -36649,9 +36706,11 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        this.props.question ? React.createElement(_answers_list2['default'], { answers: this.props.question.answers, makeGuess: this.props.makeGuess, oldGuess: this.props.oldGuess }) : ''
-	      ),
-	      React.createElement('div', { style: countDown })
+	        this.props.question ? React.createElement(_answers_list2['default'], { answers: this.props.question.answers,
+	          makeGuess: this.props.makeGuess,
+	          oldGuess: this.props.oldGuess,
+	          answerable: !!this.state.remainingEta }) : ''
+	      )
 	    );
 	  }
 	});
@@ -36693,7 +36752,7 @@
 	      null,
 	      React.createElement(
 	        Table,
-	        { selectable: !this.props.oldGuess, onRowSelection: this._handleClick, style: { border: '1px solid #ddd' } },
+	        { selectable: !this.props.oldGuess && this.props.answerable, onRowSelection: this._handleClick, style: { border: '1px solid #ddd' } },
 	        React.createElement(
 	          TableHeader,
 	          { displaySelectAll: false, adjustForCheckbox: false },
