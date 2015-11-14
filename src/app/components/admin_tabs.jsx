@@ -38,6 +38,8 @@ const AdminTabs = React.createClass({
       current_correct_answer: '',
     	current_id: null,
       game: null,
+      countdown: 0,
+      seen_questions: {},
     };
   },
 
@@ -51,6 +53,22 @@ const AdminTabs = React.createClass({
 
   },
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.game && nextProps.game.question) {
+      if (!(nextProps.game.question.query in this.state.seen_questions)) {
+        this.state.seen_questions[nextProps.game.question.query] = true;
+        this.setState({seen_questions: this.state.seen_questions, countdown:20});
+        let interval = setInterval(function() {
+          if (this.state.countdown > 0) {
+            this.setState({countdown:this.state.countdown-1});
+          } else {
+            clearInterval(interval);
+          }
+        }.bind(this), 1000);
+      }
+    }
+  },
+  
   openForm() {
   	this.setState({current_question:'', current_answers: '', current_correct_answer: '', current_id: null});
   	this.refs.formDialog.show();
@@ -129,7 +147,7 @@ const AdminTabs = React.createClass({
                     First correct: <b>{this.props.game.question.first_correct}</b>
                   </div>
                   <h2>Question {this.props.game.current_question_index+1} of {this.props.game.total_questions}
-                  &nbsp;({this.props.game.question_eta})
+                  &nbsp;({this.props.game.question_eta}) (countdown: {this.state.countdown})
                   </h2>
                   <h3><i>"{game_query}"</i></h3>
                   <RaisedButton label="Next Question" primary={true} onTouchTap={this.showNextQuestion} />

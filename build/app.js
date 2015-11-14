@@ -36613,17 +36613,6 @@
 	    var _this = this;
 	
 	    if (nextProps.eta > 0) {
-	
-	      // clear any timers that might be outstanding
-	      if (this.state.nextEta) {
-	        clearInterval(this.state.nextIntervalId);
-	        this.setState({ nextEta: null, nextIntervalId: null });
-	      }
-	      if (this.state.remainingEta) {
-	        clearInterval(this.state.nextIntervalId);
-	        this.setState({ nextEta: null, nextIntervalId: null });
-	      }
-	
 	      var nextIntervalId = window.setInterval(function () {
 	        var newEta = _this.state.nextEta - 1;
 	        if (newEta === 0) {
@@ -36650,10 +36639,7 @@
 	          this.setState({ remainingEta: newEta });
 	        }
 	      }).bind(this), 1000);
-	      this.setState({ remainingEta: 10, remainingIntervalId: remainingIntervalId });
-	    } else if (nextProps.oldGuess) {
-	      clearInterval(this.state.remainingIntervalId);
-	      this.setState({ remainingEta: null, remainingIntervalId: null });
+	      this.setState({ remainingEta: 20, remainingIntervalId: remainingIntervalId });
 	    }
 	  },
 	
@@ -37765,7 +37751,9 @@
 	      current_answers: '',
 	      current_correct_answer: '',
 	      current_id: null,
-	      game: null
+	      game: null,
+	      countdown: 0,
+	      seen_questions: {}
 	    };
 	  },
 	
@@ -37776,6 +37764,27 @@
 	  },
 	
 	  componentDidMount: function componentDidMount() {},
+	
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    var _this = this;
+	
+	    if (nextProps.game && nextProps.game.question) {
+	      console.log("Getting question: ", nextProps.game.question.query);
+	      if (!(nextProps.game.question.query in this.state.seen_questions)) {
+	        (function () {
+	          _this.state.seen_questions[nextProps.game.question.query] = true;
+	          _this.setState({ seen_questions: _this.state.seen_questions, countdown: 20 });
+	          var interval = setInterval((function () {
+	            if (this.state.countdown > 0) {
+	              this.setState({ countdown: this.state.countdown - 1 });
+	            } else {
+	              clearInterval(interval);
+	            }
+	          }).bind(_this), 1000);
+	        })();
+	      }
+	    }
+	  },
 	
 	  openForm: function openForm() {
 	    this.setState({ current_question: '', current_answers: '', current_correct_answer: '', current_id: null });
@@ -37824,6 +37833,7 @@
 	  },
 	
 	  render: function render() {
+	    console.log("Admin render, state >", this.state);
 	    var dialogActions = [{ text: 'Cancel' }, { text: 'Submit', onTouchTap: this.onDialogSubmit, ref: 'submit' }];
 	    var dialogTitle = this.state.current_question ? 'Edit Question' : 'New Question';
 	    if (this.state.current_question) {
@@ -37880,6 +37890,8 @@
 	                this.props.game.total_questions,
 	                ' (',
 	                this.props.game.question_eta,
+	                ') (countdown: ',
+	                this.state.countdown,
 	                ')'
 	              ),
 	              React.createElement(
