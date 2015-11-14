@@ -9,7 +9,7 @@ var models = require('../models');
 
 request = request(app);
 
-describe("Users CRUD works", function() {
+describe("Users CRUD...", function() {
 	before(function(done) {
 		mongoose.connection.close(function() {
 			mongoose.connect('mongodb://localhost', function() {
