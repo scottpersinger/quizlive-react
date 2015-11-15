@@ -20,12 +20,12 @@ var config = {
   },
   plugins: [
     //Minify the bundle
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     //supresses warnings, usually from module minification
-    //     warnings: false
-    //   }
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        //supresses warnings, usually from module minification
+        warnings: false
+      }
+    }),
     //Allows error warnings but does not stop compiling. Will remove when eslint is added
     new webpack.NoErrorsPlugin(),
     //Transfer Files
