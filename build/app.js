@@ -37575,7 +37575,7 @@
 	            this.setState({ remainingEta: newEta });
 	          }
 	        }).bind(_this), 1000);
-	        _this.setState({ remainingEta: 20, remainingIntervalId: remainingIntervalId });
+	        _this.setState({ remainingEta: 15, remainingIntervalId: remainingIntervalId });
 	      })();
 	    }
 	  },
