@@ -1,0 +1,282 @@
+Hello,
+
+Intro (name, group, team, get a sense of expertise in the room)
+
+"3R stack"
+
+I want to talk today about an emerging web application architecture
+that combines a RESTful API server with a rich client application, plus a real-time channel which pushes changes as they happen
+immediately to the client. On the client side we are gonna talk about
+how the React library and Flux architecture can be used to elegantly
+build our rich client and support our real-time updates.
+I've termed this architecture the "3R stack", cause it sounded kinda
+catchy.
+
+"Traditional Web Apps"
+When people first started building web applications, we were using
+a very simple architecture based on the Request/Response cycle defined
+by the HTTP protocol. The browser made a request, the server gathered
+dynamic content and generated HTML pages and returned them to the
+browser. This was a nice, simple model.
+
+"Remember the good old days?"
+Remember your first PHP page? I mean you couldn't get simpler than
+that! But this model only supported applications up to a certain
+level of complexity and interaction, because every new interaction
+requires a full page round-trip to the server.
+
+"Dynamic Web Apps"
+So then some smart folks at Microsoft invented Ajax, and the browsers
+started supported dynamic html updates executed in Javascript. This opened up a whole new era of richer applications since now you
+could fetch new data and drive new interactions with a lightweight
+call to the server, and Javascript to only update those parts of the
+page that needed to change. This ushered in a huge new era of
+complex, rich applications, and frankly worked pretty well for a long 
+time. But this model still left a couple of problems. One big problem
+was that your front-end application logic was very coupled to your backend
+server. All these little Ajax calls and response payloads were generally
+coded by hand. In fact this model really gives rise to whole notion
+of the "full stack" developer (and hence our conference name!) because
+your developers really need to be able to work across both the client
+and server stacks to build new features.
+
+"Single-page Apps"
+So ultimately we started building rich client apps purely in 
+Javascript, removing all page rendering from the server and moving
+from an ad-hoc server API to a well defined RESTful API built
+around a standardized way of mapping CRUD operations onto resources.
+The biggest win here is the separation of concerns. The server side
+developer just needs to build the RESTful server endpoints, and the
+client developer can concentrate 100% on the client app. This architecture also makes it much easier to start building mobile apps
+that can share the REST API on the backend.
+
+But this model is still limited to the basic Request/Response cycle
+of the HTTP protocol. This means if you want to show updates from
+the server quickly on the client, you have to be polling frequently
+for those updates from the server.
+
+"Why real-time?"
+People have been building "event push" systems for the browser for 
+a long time. I remember that the classic example was the stock trading
+screen showing real-time price updates. 
+
+Well it turns out there are lots of situations where its useful to 
+be able to update the browser with server-side changes in real-time. 
+This includes any sort of collaboration app, or any app with
+functions for monitoring the state of some remote system. Pushing
+updates made by other users directly to each collaborators browser
+means that everyone seens a pretty instanteously-consistent state
+of the shared work. This helps avoid change conflicts, for example.
+It also turns out that polling architectures exact a heavy load on
+a system as getting latencies down requires doing lots of useful work.
+A push architecture can reduce both load and update latency.
+
+"Real-time apps"
+The real-time architecture has really taken off with the standardization
+of web socket support on the server and in the browser. Environments 
+like Node make it really easy to uses web sockets. So now we can
+have a model where on app startup the initial system state is queried
+from the REST API via Ajax, but state updates are pushed in real-time
+over the web socket. What I'm going to show today shows how we can 
+incorporate the notion of publishing state changes into our REST API
+and server.
+
+"Rich-client architecture"
+
+Our resulting architecture gives us a clean separation of client
+logic from the backend REST API containing our business logic. This
+model supports new app platforms like mobile apps, plus the notion
+of exposing your services publically to partner applications as web
+services. This is becoming a hugely important pattern that you're
+seeing with services like Github and Heroku.
+
+"Application architecture"
+
+Today I am going to walk through the construction of a simple game
+application which uses this new architecture. We're using
+Node for our backend, storing data in Mongo and implementing
+our REST API. And we're using React and Flux for the front-end
+application. In this case I'm using the "Redux" library which implements
+the Flux architecture. Finally we have a web socket channel which
+is pushing resource updates in real-time to the browser.
+
+"Server side code tour"
+So first let's start with our server side logic and REST API.
+
+"Swagger.io"
+I used the API editor from Swagger.io to design my API. This tool
+is pretty cool, I encourage you to check it out. It makes it very
+easy to define your API in a simple declarative way, and then it
+can automatically generate documentation, client libraries and
+so forth. On the screen you can see the endpoint I defined for
+user registration, which requires simply POSTing to the "/users"
+REST endpoint.
+
+"index.js"
+
+I actually implemented the API by hand, just using Express and
+the Mongoose library. I defined my entities as Mongoose models,
+and then wrote Express endpoints which manipulate the models and
+implement my game logic. So here you can see our users REST
+endpoint, but the GET operation for listing all users and the
+POST operation for creating a new user. I've simplified the code
+here to remove error handling and such, but this is pretty much
+how the entire REST API is implemented.
+
+"test/users.js"
+
+And just so you know that I didn't cheat, I wrote unit tests
+for all the REST endpoints using the Mocha library. Here's
+a basic test that verifies that my user CREATE endpoint works.
+The only thing missing from the server is the websocket handling,
+but I'll go over that in a bit.
+
+"Front-end architecture"
+So now let's get to the more interesting front-end architecture.
+For my client app I'm using the React library from Facebook for
+rendering smart components, and building on the Flux architecture
+with comes with React. 
+
+Many of you have probably heard of React. React is really
+a library for constructing your app interface out of re-usuable
+components. Each component is responsible for displaying a certain
+chunk of your UI containing certain information. React simplifies
+building your UI because it allows you to efficient re-render
+your entire page whenever any state changes in your app. This
+fundamentally gets you out of the business of managing updates
+to individual DOM elements.
+
+But the more interesting (and hard to understand) side of React 
+in my mind is actually The Flux architecture. This architecture
+defines a uni-directional flow of data in your app which you can
+see in the diagram, as components call Action creators, they call reducers, the reducers update state in your store, and the store 
+sends updates back to the components.
+
+"The Flux Architecture"
+
+So what is this Flux architecture all about? Flux attempts to answer
+the question "How do I manage state in my app?" State is just all
+the information that your app is showing that could change at some point in time. The thing that Facebook
+observed was that as their application grew bigger and more complex,
+it became really hard to reason about its behavior. Javascript functions
+from all over the place could change some app state, and various
+other parts of the app would have to react and show those changes
+properly. Over time it becomes really hard to visualize the data flows
+in your application and its easy for bugs to creep in. So the
+Flux architecture attempts to simplify this world by saying that data
+changes flow in a very specific single direction. (Go back to previous
+slide). Also, you never change state directly. That is, if your
+app contains an array of messages, you never have application
+logic modify that array directly. Instead you create an "action"
+which is a little data packet that specifies WHAT data is changing
+and what the new data is. These elements make it possible for us
+to create a very regular data flow in our application that helps
+us maintain and grow the app over time.
+
+"components/game_tab.jsx"
+So let's look at a small example. My game shows a leaderboard of
+users ranked by the current point total. Let's walk through how
+those user records are queried from the REST API and shown in my app.
+Now I want the leaderboard to appear as soon as you start the app,
+so in this case I have a UI component, called "GameTabs", and it
+implements this 'componentWillMount' function. This is like the
+initializer for the component when it first appears. This function is
+going to call an *action creator* that I have defined called
+'list_users'. I've shown the code for that below. List_users is a 
+function which calls my REST API /api/users endpoints to retrieve
+the set of game players. I'm using the new "fetch" function here,
+but basically this is just an Ajax call. When this call returns,
+then I'm going to construct an action packet to represent the new
+list of users and dispatch that action. The dispatch function
+comes from the Redux library, and it basically says, "Hey, apply
+this action to the current app state". 
+
+"reducers/users.list" [NOT LIST, js]
+Now Redux has this notion of "reducer" functions. The purpose of
+a reducer is to interpret an action against our current state, and
+to return new application state with that action applied. So you
+can see in the csae of our USERS_LIST action, we are just going
+to return the new list of users, but first we call this orderByPoints
+function which will order our user list according to points total
+to get our leaderboard ranking. What's interesting in Flux and
+Redux is that ALL reducer functions receive ALL actions. This is
+why you see the switch statement on the action type. What's cool
+about this is that you can create multiple reducers according to 
+the particular state they need to manage, but any reducer can respond
+to any action, so if you have actions which affect lots of state, like
+if user logs out, then it's very easy to implement all of those
+state changes in a modular way. So once our reducer function returns
+then our new list of users is applied to our store, which contains
+all our app state, and then the new state is passed back to our
+React components.
+
+"game_tabs.jsx"
+So now we're back in our GameTabs React component. Our mapStateToProps
+function simply copies the app state for our new user list into the
+properties for our React component, and then React calls the
+"render" method of our component. This method now actually generates
+HTML to render for the user. In this case the GameTabs component just
+passes the user list down to a sub-component, the LeaderboardTable,
+and that components actually generates a table containing each username
+and their point total. 
+
+Phew! Ok, going all the way through the Flux loop took a while, but
+once you get the basic pattern it becomes pretty easy to implement
+new logic and new components.
+
+"The reducer pattern"
+Just a few notes on the reducer pattern in Redux, which it inherits
+from Flux. The core idea is something we used to call the "command
+pattern", which just means encapsulating all state changes into
+little objects that you can save, or undo, or replay, and then
+having a well defined set of functions whose job is to apply a
+new action to the current state of the app.
+
+"Key insight"
+
+Ok, so we just saw the basic requst/response flow for loading our
+initial app state. But now let's see how we can implement real-time
+updates. Our key insight is to add the "PUBLISH and SUBSCRIBE" verbs
+to our list of HTTP verbs. In addition to the CRUD operations around
+all of our RESTful resources, now our application can send a SUBSCRIBE
+request to the server, specific to a particular resource, and the server will send PUBLISH events whenever something changes on that
+resource. Obviously the websocket will stay open, so we may receive
+many PUBLISH events for a single SUBSCRIBE.
+
+"io.on"
+
+On the server this turns out to be very simple to implement. First
+our server listens for new websocket connections, and then sets up
+a handler for our 'subscribe' event. When we receive a subscription we
+record who subscribed and to which resource. A real application would
+need to authenticate that the client has access to the resource, but 
+I've left that out of my simple example.
+
+Now we setup a Mongoose lifecycle callback to invoke our function
+whenever one of our models gets saved, in this case whenever a User
+record gets saved. In that function we invoke our model_signals
+handler and we describe the lifecycle event, the create or update,
+the record type, and the new value.
+
+Finally in the model_signals function we simply send the PUBLISH
+event containing the new resource over the websocket. I have simplified
+this flow for this example, in particular I am simply dispatching model
+events within my single Node process. In a real app you would have
+multiple Node processes running for load, and so you would need to
+distribute model change events throughout your cluster. A Redis
+server is great option for this.
+
+"Front-end architecture"
+Now we can see our front-end architecture again, and we can how
+we can easily add our new PUBLISH events into our Flux data flow
+as they arrive on the websocket.
+
+"api-events"
+Here is the basic flow in Javascript. Whenever we receive a publish
+event we dispatch to our userAPIUpdate function, and then depending
+on the lifecycle event type we construct a new action and dispatch
+it to the reducer so as we saw before.
+
+
+
+

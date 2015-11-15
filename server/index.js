@@ -265,7 +265,7 @@ router.route('/guesses')
               User.findOne({name: req.body.user_id}, function(err, doc) {
                 if (err) return cb(err);
                 console.log("Setting a users points ", doc.toObject());
-                doc.points = (doc.points || 0) + (firstToAnswer ? 5 : 1);
+                doc.points = (doc.points || 0) + (firstToAnswer ? 4 : 2);
                 doc.save(function(err) {
                   if (firstToAnswer) {
                     Game.findOne({}).then(function(game) {

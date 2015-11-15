@@ -54,7 +54,7 @@ export default React.createClass({
           this.setState({remainingEta: newEta});
         }
       }.bind(this), 1000);
-      this.setState({remainingEta: 20, remainingIntervalId: remainingIntervalId});
+      this.setState({remainingEta: 15, remainingIntervalId: remainingIntervalId});
     }
   },
 
