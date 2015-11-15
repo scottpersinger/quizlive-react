@@ -57,7 +57,7 @@ const AdminTabs = React.createClass({
     if (nextProps.game && nextProps.game.question) {
       if (!(nextProps.game.question.query in this.state.seen_questions)) {
         this.state.seen_questions[nextProps.game.question.query] = true;
-        this.setState({seen_questions: this.state.seen_questions, countdown:20});
+        this.setState({seen_questions: this.state.seen_questions, countdown:15});
         let interval = setInterval(function() {
           if (this.state.countdown > 0) {
             this.setState({countdown:this.state.countdown-1});
