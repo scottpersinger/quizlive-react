@@ -10,6 +10,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - tar cvzf blogapp.tar.gz .
 artifacts:
   files: 
-    - '**/*'
+    - blogapp.tar.gz
