@@ -11,7 +11,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - mkdir .build
-      - tar cvzf .build/blogapp.tar.gz .
+      - tar cvzf .build/blogapp.tar.gz src server node_modules *.*
 artifacts:
   files: 
     - .build/blogapp.tar.gz
