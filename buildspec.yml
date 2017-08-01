@@ -1,0 +1,19 @@
+version: 0.2
+
+env:
+  variables:
+
+phases:
+  install:
+    commands:
+      - apt-get update -y
+      - apt-get install -y npm
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - webpack --config ./webpack-production.config.js --progress --colors
+  post_build:
+    commands:
+      - echo Build completed on `date`
