@@ -6,7 +6,7 @@ phases:
       - npm install
   build:
     commands:
-      - webpack --config ./webpack-production.config.js --progress --colors
+      - node node_modules/webpack/bin/webpack.js --config ./webpack-production.config.js --progress --colors
   post_build:
     commands:
       - echo Build completed on `date`
